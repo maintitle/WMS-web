@@ -4,12 +4,12 @@
       <div class="user-photo">
         <a class="img" title="我的头像"
           ><img
-            src="../../assets/img/face.png"
+            :src=$store.getters.avatar
             th:src="${'/file/showImageByPath?path='+session.user.getImgpath()}"
             class="userAvatar"
         /></a>
         <p>
-          你好！<span class="userName" th:text="${session.user.name}"></span>,
+          你好！{{$store.getters.name}},
           欢迎登录
         </p>
       </div>

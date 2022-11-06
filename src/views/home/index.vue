@@ -4,7 +4,7 @@
       <el-col :span="24">
         <div class="grid-content bg-purple-dark bg-green">
           <p>
-            亲爱的，超级管理员 下午好！ 欢迎使用 仓库管理系统。当前时间为：{{
+            亲爱的，{{$store.getters.name}} 下午好！ 欢迎使用 仓库管理系统。当前时间为：{{
               gettime
             }}
           </p>
@@ -108,6 +108,9 @@ export default {
   mounted() {
     this.currentTime();
   },
+  created(){
+    console.log(this)
+  }
 };
 </script>
 

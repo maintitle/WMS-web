@@ -6,7 +6,6 @@ Vue.use(Router)
 import Layout from '../views/layout/main.vue'
 export const constantRouterMap = [
     { path: '/', redirect: '/home' },
-    { path: '/404', component: () => import('@/views/404'), hidden: true },
     { path: '/login', component: () => import('@/views/login/index'), name: 'login', meta: { title: '登录' } },
     {
         path: '',

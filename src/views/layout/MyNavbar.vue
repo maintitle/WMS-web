@@ -10,10 +10,10 @@
             <el-avatar
               shape="square"
               size="medium"
-              :src="squareUrl"
+              :src=$store.getters.avatar
               class="user-img"
             ></el-avatar>
-            用户名<i class="el-icon-arrow-down el-icon--right"></i>
+            {{$store.getters.name}}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item>个人资料</el-dropdown-item>
