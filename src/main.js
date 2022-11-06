@@ -8,6 +8,7 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import '@/icons' // icon
 import store from './store'
+import '@/permission' // permission control
 
 Vue.config.productionTip = false
 Vue.use(ElementUI);

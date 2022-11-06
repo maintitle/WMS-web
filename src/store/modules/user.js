@@ -1,5 +1,6 @@
 import { login, logout, getInfo } from '@/api/login'
 import { getToken, setToken, removeToken } from '@/utils/auth'
+import { reject, resolve } from 'core-js/fn/promise'
 
 const user = {
   state: {
@@ -29,7 +30,7 @@ const user = {
     Login({ commit }, userInfo) {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
-        login(username, userInfo.password).then(response => {
+        login(username, userInfo.password,userInfo.code).then(response => {
           const data = response.data
           const tokenStr = data.tokenHead+data.token
           setToken(tokenStr)
@@ -81,7 +82,17 @@ const user = {
         removeToken()
         resolve()
       })
-    }
+    },
+    //获取验证码图片
+    // GetCode(){
+    //   return new Promise((resolve,reject)=>{
+    //     getCode().then((response)=>{
+    //         resolve(response)
+    //     }).catch(error =>{
+    //       reject(error)
+    //     })
+    //   })
+    // }
   }
 }
 

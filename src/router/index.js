@@ -5,7 +5,7 @@ Vue.use(Router)
 /* Layout */
 import Layout from '../views/layout/main.vue'
 export const constantRouterMap = [
-    { path: '/', redirect: '/login' },
+    { path: '/', redirect: '/home' },
     {
         path: '/login',
         component: () => import('@/views/login/index'),
@@ -28,5 +28,6 @@ export const constantRouterMap = [
 export default new Router({
     // mode: 'history', //后端支持可开
     scrollBehavior: () => ({ y: 0 }),
+    mode: 'history',
     routes: constantRouterMap
 })

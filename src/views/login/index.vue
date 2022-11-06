@@ -40,7 +40,7 @@
           autocomplete="off"
           v-model="ruleForm.code"
         ></el-input>
-        <img src="../../assets/img/code.jpg" />
+        <img :src="src" @click="getCaptcha()" alt="" />
       </el-form-item>
 
       <el-form-item label-width="0px">
@@ -57,13 +57,16 @@
 </template>
 <script>
 import { isvalidUsername } from "@/utils/validate";
-import { setSupport, getSupport, setCookie, getCookie } from "@/utils/support";
+import { setCookie, getCookie } from "@/utils/support";
+import { getCode } from "@/api/login";
 export default {
   data() {
     var checkCode = (rule, value, callback) => {
       if (value === "") {
         return callback(new Error("验证码不能为空"));
-      } else {
+      } else if (value.toLowerCase() !== this.codekey){
+        return callback(new Error("验证码错误"));
+      }else{
         callback();
       }
     };
@@ -93,28 +96,24 @@ export default {
         password: [{ validator: validatePass, trigger: "blur" }],
         code: [{ validator: checkCode, trigger: "blur" }],
       },
+      src: "",
+      codekey: ""
     };
   },
   created() {
+    this.getCaptcha();
     this.ruleForm.username = getCookie("username");
-    this.ruleForm.password = getCookie("password");
     if (
       this.ruleForm.username === undefined ||
       this.ruleForm.username == null ||
       this.ruleForm.username === ""
     ) {
-      this.ruleForm.username = "admin";
-    }
-    if (
-      this.ruleForm.password === undefined ||
-      this.ruleForm.password == null
-    ) {
-      this.ruleForm.password = "";
+      this.ruleForm.username = "system";
     }
   },
   methods: {
     handleLogin() {
-      this.$refs.ruleForm.validate((valid) => {
+      this.$refs["ruleForm"].validate((valid) => {
         if (valid) {
           // let isSupport = getSupport();
           // if(isSupport===undefined||isSupport==null){
@@ -127,7 +126,6 @@ export default {
             .then(() => {
               this.loading = false;
               setCookie("username", this.ruleForm.username, 15);
-              setCookie("password", this.ruleForm.password, 15);
               this.$router.push({ path: "/" });
             })
             .catch(() => {
@@ -140,6 +138,19 @@ export default {
           });
           return false;
         }
+      });
+    },
+    // 获取验证码
+    getCaptcha() {
+      return new Promise((reject) => {
+        getCode()
+          .then((response) => {
+            this.src=response.data.img
+            this.codekey=response.data.key
+          })
+          .catch((error) => {
+            reject(error);
+          });
       });
     },
   },

@@ -1,33 +1,34 @@
 import request from '@/utils/request'
 
-export function login(username, password) {
+export function login(username, password, code) {
   return request({
-    url: '/admin/login',
+    url: '/user/login',
     method: 'post',
     data: {
       username,
-      password
+      password,
+      code
     }
   })
 }
 
 export function getInfo() {
   return request({
-    url: '/admin/info',
+    url: '/user/info',
     method: 'get',
   })
 }
 
 export function logout() {
   return request({
-    url: '/admin/logout',
+    url: '/user/logout',
     method: 'post'
   })
 }
 
 export function fetchList(params) {
   return request({
-    url: '/admin/list',
+    url: '/user/list',
     method: 'get',
     params: params
   })
@@ -35,7 +36,7 @@ export function fetchList(params) {
 
 export function createAdmin(data) {
   return request({
-    url: '/admin/register',
+    url: '/user/register',
     method: 'post',
     data: data
   })
@@ -43,7 +44,7 @@ export function createAdmin(data) {
 
 export function updateAdmin(id, data) {
   return request({
-    url: '/admin/update/' + id,
+    url: '/user/update/' + id,
     method: 'post',
     data: data
   })
@@ -51,7 +52,7 @@ export function updateAdmin(id, data) {
 
 export function updateStatus(id, params) {
   return request({
-    url: '/admin/updateStatus/' + id,
+    url: '/user/updateStatus/' + id,
     method: 'post',
     params: params
   })
@@ -59,22 +60,28 @@ export function updateStatus(id, params) {
 
 export function deleteAdmin(id) {
   return request({
-    url: '/admin/delete/' + id,
+    url: '/user/delete/' + id,
     method: 'post'
   })
 }
 
 export function getRoleByAdmin(id) {
   return request({
-    url: '/admin/role/' + id,
+    url: '/user/role/' + id,
     method: 'get'
   })
 }
 
 export function allocRole(data) {
   return request({
-    url: '/admin/role/update',
+    url: '/user/role/update',
     method: 'post',
     data: data
+  })
+}
+export function getCode(){
+  return request({
+    url: '/user/getCode',
+    method: 'get',
   })
 }
