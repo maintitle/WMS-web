@@ -4,15 +4,15 @@
       <main-navbar></main-navbar>
     </el-header>
 
-    <el-container>
-      <el-aside width="200px">
+    <el-container class="main-contain">
+      <el-aside class="aside-contain" width=200px>
         <main-sidebar></main-sidebar>
       </el-aside>
       <el-container>
-        <el-main style="padding: 0px;height:100%">
-            <main-content></main-content>
+        <el-main style="padding: 0px; height: 100%">
+          <main-content></main-content>
         </el-main>
-        <el-footer style="height: 44px;">copyright @2022 TangZhen</el-footer>
+        <el-footer style="height: 44px">copyright @2022 TangZhen</el-footer>
       </el-container>
     </el-container>
   </el-container>
@@ -21,7 +21,7 @@
 <script>
 import MainNavbar from "./MyNavbar.vue";
 import MainSidebar from "./MySidebar.vue";
-import MainContent from "./MainContent.vue"
+import MainContent from "./MainContent.vue";
 export default {
   components: {
     MainNavbar,
@@ -31,7 +31,13 @@ export default {
 };
 </script>
 
-<style scoped>
+<style lang="scss" scoped>
+.main-contain {
+  height: 93%;
+  .aside-contain {
+    height: 100%;
+  }
+}
 .fullWin {
   height: 100%;
   position: absolute;
@@ -39,7 +45,7 @@ export default {
   right: 0;
   top: 0;
   bottom: 0;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 .el-header {
   background-color: rgb(35, 38, 46);
@@ -86,7 +92,7 @@ body > .el-container {
   max-height: 60px;
   height: 60px;
 }
-.el-footer{
+.el-footer {
   line-height: 44px;
   font-size: 14px;
   color: black;

@@ -291,11 +291,6 @@ iframe {
     overflow: hidden;
 }
 
-.user-photo {
-    width: 200px;
-    height: 120px;
-    padding: 15px 0 5px;
-}
 
 .user-photo a.img {
     display: block;

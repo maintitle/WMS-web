@@ -8,17 +8,16 @@ export const constantRouterMap = [
     { path: '/', redirect: '/home' },
     { path: '/login', component: () => import('@/views/login/index'), name: 'login', meta: { title: '登录' } },
     {
-        path: '',
+        path: '/',
         component: Layout,
         redirect: '/home',
         children: [{
             path: 'home',
             name: 'home',
             component: () => import('@/views/home/index'),
-            meta: { title: '首页', icon: 'home' }
+            meta: { title: '后台首页', icon: 'home' }
         }]
     },
-
 ]
 
 export const asyncRouterMap = [
