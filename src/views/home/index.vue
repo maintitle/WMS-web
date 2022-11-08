@@ -109,7 +109,7 @@ export default {
     this.currentTime();
   },
   created(){
-    console.log(this)
+    // console.log(this)
   }
 };
 </script>

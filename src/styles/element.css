@@ -1,0 +1,31 @@
+/* 子节点选中样式(前面只有一级，后面子级) */
+.el-menu-item.is-active,
+.el-submenu .el-menu-item.is-active {
+  background-color: #009688 !important;
+}
+/* 子节点选中鼠标移入样式 */
+.el-menu-item.is-active:hover,
+.el-submenu .el-menu-item:hover {
+  background-color: #009688 !important;
+}
+/* 子节点鼠标移入样式 */
+.el-menu-item:hover {
+  background-color: #009688 !important;
+    /* border-right: 10px solid #000; */
+}
+/* 父节点鼠标移入样式 */
+.el-submenu__title:hover {
+  background-color: #009688 !important;
+}
+.is-opened{
+    background-color: rgb(30,32,38) !important;
+}
+
+.el-menu-item {
+  text-align: left;
+  width: 200px;
+}
+.el-submenu__title {
+  text-align: left;
+  width: 200px;
+}

@@ -3,10 +3,7 @@
     <div class="layui-side layui-bg-black side-wrapper">
       <div class="user-photo">
         <a class="img" title="我的头像"
-          ><img
-            :src="$store.getters.avatar"
-            th:src="${'/file/showImageByPath?path='+session.user.getImgpath()}"
-            class="userAvatar"
+          ><img :src="$store.getters.avatar" class="userAvatar"
         /></a>
         <p>你好！{{ $store.getters.name }}, 欢迎登录</p>
       </div>
@@ -16,29 +13,30 @@
       <el-row class="tac">
         <el-col :span="24">
           <el-menu
-            default-active="2"
+          ref="menuElement"
             class="el-menu-vertical-demo"
             @open="handleOpen"
             @close="handleClose"
-            background-color="#545c64"
+            background-color="rgb(57, 61, 73)"
             text-color="#fff"
-            active-text-color="#ffd04b"
+            active-text-color="#fff"
           >
             <router-link to="/home" key="home">
-              <el-menu-item :index="'/home'">
-                <svg-icon icon-class="user" color='#27ac3d'/>
+              <el-menu-item  :index="'home'">
+                <svg-icon icon-class="home" style="padding-right: 4px"/>
                 <span slot="title">后台首页</span>
               </el-menu-item>
             </router-link>
             <template
               v-for="item in routes"
-              v-if="!item.hidden && item.children && item.name">
+              v-if="!item.hidden && item.children && item.name"
+            >
               <el-submenu :index="item.name || item.path" :key="item.name">
                 <template slot="title">
-                  <!-- <svg-icon
-                  v-if="item.meta && item.meta.icon"
-                  :icon-class="item.meta.icon"
-                ></svg-icon> -->
+                  <svg-icon
+                    v-if="item.meta && item.meta.icon"
+                    :icon-class="item.meta.icon"
+                  ></svg-icon>
                   <span v-if="item.meta && item.meta.title" slot="title">
                     {{ item.meta.title }}</span
                   >
@@ -59,10 +57,10 @@
                     :key="child.name"
                   >
                     <el-menu-item :index="item.path + '/' + child.path">
-                      <!-- <svg-icon
-                      v-if="child.meta && child.meta.icon"
-                      :icon-class="child.meta.icon"
-                    ></svg-icon> -->
+                      <svg-icon
+                        v-if="child.meta && child.meta.icon"
+                        :icon-class="child.meta.icon"
+                      ></svg-icon>
                       <span
                         v-if="child.meta && child.meta.title"
                         slot="title"
@@ -84,6 +82,11 @@
 import { mapGetters } from "vuex";
 // import ScrollBar from '@/components/ScrollBar'
 export default {
+  // data(){
+  //   return {
+  //     openMenu: []  
+  //   }
+  // },
   // components: { ScrollBar },
   props: {
     isNest: {
@@ -119,7 +122,20 @@ export default {
 };
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped >
+/deep/ .el-icon-arrow-down:before{
+    content: "\e790"
+  }
+/deep/ .el-submenu__title i{
+  color: #ecf5ff;
+}
+.el-icon-arrow-down:before{
+  content: "\e790",
+}
+.el-submenu__title{
+  width: 200px;
+
+}
 .menu-wrapper {
   height: 79%;
 }
@@ -135,13 +151,13 @@ export default {
   // top: 150px;
 }
 
-.el-scrollbar__wrap {
+/deep/ .el-scrollbar__wrap {
   overflow: scroll;
   width: 110%;
   height: 120%;
 }
 
-.page-scroll .el-scrollbar__wrap {
+/deep/ .page-scroll .el-scrollbar__wrap {
   overflow-x: hidden;
 }
 .sidebar_face {
