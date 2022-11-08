@@ -1,19 +1,21 @@
 <template>
   <svg :class="svgClass" aria-hidden="true">
-    <use :xlink:href="iconName"></use>
+    <use :xlink:href="iconName" />
   </svg>
 </template>
 
 <script>
+
 export default {
-  name: 'svg-icon',
+  name: 'SvgIcon',
   props: {
     iconClass: {
       type: String,
       required: true
     },
     className: {
-      type: String
+      type: String,
+      default: ''
     }
   },
   computed: {
@@ -26,17 +28,24 @@ export default {
       } else {
         return 'svg-icon'
       }
-    }
+    },
   }
 }
 </script>
 
 <style scoped>
 .svg-icon {
-  width: 1.2em;
-  height: 1.2em;
-  vertical-align: -0.18em;
+  width: 1em;
+  height: 1em;
+  vertical-align: -0.15em;
   fill: currentColor;
   overflow: hidden;
 }
+
+.svg-external-icon {
+  background-color: currentColor;
+  mask-size: cover!important;
+  display: inline-block;
+}
 </style>
+

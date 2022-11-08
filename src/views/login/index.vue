@@ -49,7 +49,7 @@
           class="buttonSize"
           :loading="loading"
           @click.native.prevent="handleLogin"
-          >登入</el-button
+          >登录</el-button
         >
       </el-form-item>
     </el-form>

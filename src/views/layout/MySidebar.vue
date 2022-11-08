@@ -24,33 +24,16 @@
             text-color="#fff"
             active-text-color="#ffd04b"
           >
-
-           <router-link
-                to='/home'
-                key="home"
-              >
-                <el-menu-item
-                  :index="'/home'"
-                >
-                  <!-- <svg-icon
-                  v-if="item.children[0].meta && item.children[0].meta.icon"
-                  :icon-class="item.children[0].meta.icon"
-                ></svg-icon> -->
-                  <span
-                    slot="title"
-                  >后台首页</span
-                  >
-                </el-menu-item>
-              </router-link>
+            <router-link to="/home" key="home">
+              <el-menu-item :index="'/home'">
+                <svg-icon icon-class="user" color='#27ac3d'/>
+                <span slot="title">后台首页</span>
+              </el-menu-item>
+            </router-link>
             <template
               v-for="item in routes"
-              v-if="!item.hidden && item.children && item.name"
-            >
-             
-              <el-submenu
-                :index="item.name || item.path"
-                :key="item.name"
-              >
+              v-if="!item.hidden && item.children && item.name">
+              <el-submenu :index="item.name || item.path" :key="item.name">
                 <template slot="title">
                   <!-- <svg-icon
                   v-if="item.meta && item.meta.icon"
@@ -153,10 +136,10 @@ export default {
 }
 
 .el-scrollbar__wrap {
-    overflow: scroll;
-    width: 110%;
-    height: 120%;
-  }
+  overflow: scroll;
+  width: 110%;
+  height: 120%;
+}
 
 .page-scroll .el-scrollbar__wrap {
   overflow-x: hidden;
