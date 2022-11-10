@@ -4,24 +4,23 @@
       <el-col :span="24">
         <div class="grid-content bg-purple-dark bg-green">
           <p>
-            亲爱的，{{$store.getters.name}} 下午好！ 欢迎使用 仓库管理系统。当前时间为：{{
-              gettime
-            }}
+            亲爱的，{{ $store.getters.name }} 下午好！ 欢迎使用
+            仓库管理系统。当前时间为：{{ gettime }}
           </p>
         </div>
       </el-col>
     </el-row>
     <el-row class="row-margin" :gutter="10">
-      <el-col class="" :span="12">
+      <el-col style="padding-left: 15px" :span="12">
         <div class="grid-content bg-purple elem-quote col-height">
-          <p>最新公告</p>
+          <p>最新公告</p> 
         </div>
-        <div class="col-content">
-          <span>asdas</span>
-          <span>2020-03-08</span>
-        </div>
+          <div v-for="item in notice" class="col-content" v-bind:key="item.id">
+            <span>{{item.content}}</span>
+            <span>{{item.createtime}}</span>
+          </div>
       </el-col>
-      <el-col class="" :span="12"
+      <el-col style="padding-right: 15px" :span="12"
         ><div class="grid-content bg-purple-light elem-quote col-height">
           库存预警
         </div></el-col
@@ -44,15 +43,29 @@
 </template>
 
 <script>
+import { getNotice } from "@/api/notice";
 export default {
   name: "Home",
   data() {
     return {
       gettime: "", //当前时间
+      notice: {
+        id: "",
+        title: "",
+        content: "",
+        createtime: "",
+        opername: "",
+      },
     };
   },
 
   methods: {
+    getNotices() {
+      getNotice().then((response) => {
+        this.notice = response.data;
+        console.log(response);
+      });
+    },
     getTime() {
       var _this = this;
       let yy = new Date().getFullYear();
@@ -108,14 +121,16 @@ export default {
   mounted() {
     this.currentTime();
   },
-  created(){
+  created() {
+    this.getNotices();
     // console.log(this)
-  }
+  },
 };
 </script>
 
 <style lang="scss" scoped>
 .row-margin {
+  margin: 10px 10px;
   margin-bottom: 10px;
   position: relative;
   .col-height {

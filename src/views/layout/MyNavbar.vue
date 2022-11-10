@@ -6,19 +6,25 @@
     <ul class="top-menu">
       <li class="top-nav-item">
         <el-dropdown>
-          <span class="el-dropdown-link" style="color: white;">
+          <span class="el-dropdown-link" style="color: white">
             <el-avatar
               shape="square"
               size="medium"
-              :src=$store.getters.avatar
+              :src="$store.getters.avatar"
               class="user-img"
             ></el-avatar>
-            {{$store.getters.name}}<i class="el-icon-arrow-down el-icon--right"></i>
+            {{ $store.getters.name
+            }}<i class="el-icon-arrow-down el-icon--right"></i>
           </span>
           <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item>个人资料</el-dropdown-item>
-            <el-dropdown-item>修改密码</el-dropdown-item>
-            <el-dropdown-item>退出</el-dropdown-item>
+            <el-dropdown-item>
+              <router-link to="/user" key="user">个人资料</router-link>
+              </el-dropdown-item>
+            <el-dropdown-item
+              ><span @click="logout" style="display: block"
+                >退出空间</span
+              ></el-dropdown-item
+            >
           </el-dropdown-menu>
         </el-dropdown>
       </li>
@@ -29,14 +35,21 @@
 <script>
 export default {
   data() {
-    return {
-    };
+    return {};
+  },
+  methods: {
+    logout() {
+      this.$store.dispatch("LogOut").then(() => {
+        location.reload(); // 为了重新实例化vue-router对象 避免bug
+      });
+    },
+    userDetail() {},
   },
 };
 </script>
 
 <style lang="scss" scoped>
-.user-img{
+.user-img {
   vertical-align: middle;
 }
 .color-main {

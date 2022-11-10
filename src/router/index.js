@@ -18,6 +18,17 @@ export const constantRouterMap = [
             meta: { title: '后台首页', icon: 'home' }
         }]
     },
+    {
+        path: '/user',
+        component: Layout,
+        redirect: '/user/detail',
+        children: [{
+            path: 'detail',
+            name: 'detail',
+            component: () => import('@/views/user/index'),
+            meta: { title: '个人资料', icon: 'detail' }
+        }]
+    }
 ]
 
 export const asyncRouterMap = [
