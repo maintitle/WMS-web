@@ -26,7 +26,7 @@
     </el-dialog>
 
     <div>
-      <el-button type="primary"
+      <el-button type="primary" @click="updatePhoto"
         >上传<i class="el-icon-upload el-icon--right"></i
       ></el-button>
     </div>
@@ -34,10 +34,15 @@
 </template>
 
 <script>
+import axios from "axios";
+import { policy } from "@/api/obs";
+import { updateAdmin } from "@/api/login";
+import { Message } from "element-ui";
 export default {
   name: "singleUpload",
   props: {
     photo: String,
+    uid: Number,
   },
   data() {
     return {
@@ -46,6 +51,20 @@ export default {
       dialogImageUrl: "",
       dialogVisible: false,
       disabled: false,
+      id: this.uid,
+      dataObj: {
+        policy: "",
+        signature: "",
+        key: "",
+        AccessKeyId: "",
+        "x-obs-acl": "public-read",
+      },
+      userData: {
+        id: "",
+        imgpath: "",
+      },
+      obsUploadUrl: "",
+      dir: "",
     };
   },
   methods: {
@@ -60,10 +79,47 @@ export default {
       this.imageUrl = URL.createObjectURL(file.raw);
       this.localfile = file;
     },
-    updatePhoto(){
-        let formData = new FormData();
-        formData.append("file", this.localfile.raw);
-    }
+    updatePhoto() {
+      return new Promise((resolve) => {
+        policy(this.id)
+          .then((response) => {
+            this.dataObj.policy = response.data.policy;
+            this.dataObj.signature = response.data.signature;
+            this.dataObj.AccessKeyId = response.data.accessKeyId;
+            this.dataObj.key = response.data.dir + this.localfile.name;
+            this.dir = response.data.dir;
+            this.obsUploadUrl = response.data.host;
+            //发送post表单提交图片
+            axios({
+              method: "post",
+              baseURL: this.obsUploadUrl,
+              headers: { "Content-Type": "multipart/form-data" },
+              data: {
+                policy: this.dataObj.policy,
+                signature: this.dataObj.signature,
+                key: this.dataObj.key,
+                AccessKeyId: this.dataObj.AccessKeyId,
+                "x-obs-acl": "public-read",
+                file: this.localfile.raw,
+              },
+            })
+            resolve(true);
+          })
+      }).then(() => {
+        return new Promise(() => {
+          this.userData.id = this.id;
+          this.userData.imgpath = this.obsUploadUrl + "/" + this.dataObj.key;
+          updateAdmin(this.userData).then(() => {
+            this.imageUrl = this.userData.imgpath;
+            Message({
+              message: "上传成功",
+              type: "success",
+              duration: 3 * 1000,
+            });
+          });
+        });
+      });
+    },
   },
 };
 </script>

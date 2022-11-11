@@ -1,18 +1,18 @@
 <template>
   <div>
-   <single-upload :photo=avatar></single-upload>
+    <single-upload :photo="avatar" :uid="id"></single-upload>
   </div>
 </template>
 
 <script>
 import { mapGetters } from "vuex";
-import SingleUpload from '@/components/upload/singleUpload.vue'
+import SingleUpload from "@/components/upload/singleUpload.vue";
 export default {
-  components:{SingleUpload},
+  components: { SingleUpload },
   name: "updatePhoto",
-  computed:{
-    ...mapGetters(["avatar"]),
-  }
+  computed: {
+    ...mapGetters(["avatar","id"]),
+  },
 };
 </script>
 

@@ -12,7 +12,7 @@
         <PhotoTable> </PhotoTable>
       </el-tab-pane>
       <el-tab-pane label="密码管理" name="3">
-        <PwdTable></PwdTable>
+        <PwdTable :userDetail="userDetail"></PwdTable>
       </el-tab-pane>
     </el-tabs>
   </div>
