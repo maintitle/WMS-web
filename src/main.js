@@ -1,11 +1,10 @@
 import App from './App.vue'
 import Vue from 'vue'
 import router from './router'
-import '@/styles/index.css'
-import '@/styles/public.css'
 import '@/styles/reset.css'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import '@/styles/index.scss'
 import '@/icons' // icon
 import store from './store'
 import '@/permission' // permission control
