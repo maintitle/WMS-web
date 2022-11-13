@@ -8,12 +8,10 @@
         <p>你好！{{ $store.getters.name }}, 欢迎登录</p>
       </div>
     </div>
-
-    <el-scrollbar class="page-scroll">
-      <el-row class="tac">
+      <el-row class="tac scroll-type">
         <el-col :span="24">
           <el-menu
-          ref="menuElement"
+            ref="menuElement"
             class="el-menu-vertical-demo"
             @open="handleOpen"
             @close="handleClose"
@@ -22,8 +20,8 @@
             active-text-color="#fff"
           >
             <router-link to="/home" key="home">
-              <el-menu-item  :index="'home'">
-                <svg-icon icon-class="home" style="padding-right: 4px"/>
+              <el-menu-item :index="'home'">
+                <svg-icon icon-class="home" style="padding-right: 4px" />
                 <span slot="title">后台首页</span>
               </el-menu-item>
             </router-link>
@@ -74,7 +72,6 @@
           </el-menu>
         </el-col>
       </el-row>
-    </el-scrollbar>
   </div>
 </template>
 
@@ -82,12 +79,6 @@
 import { mapGetters } from "vuex";
 // import ScrollBar from '@/components/ScrollBar'
 export default {
-  // data(){
-  //   return {
-  //     openMenu: []  
-  //   }
-  // },
-  // components: { ScrollBar },
   props: {
     isNest: {
       type: Boolean,
@@ -123,18 +114,17 @@ export default {
 </script>
 
 <style lang="scss" scoped >
-/deep/ .el-icon-arrow-down:before{
-    content: "\e790"
-  }
-/deep/ .el-submenu__title i{
+::v-deep .el-icon-arrow-down:before {
+  content: "\e790";
+}
+::v-deep .el-submenu__title i {
   color: #ecf5ff;
 }
-.el-icon-arrow-down:before{
-  content: "\e790",
+.el-icon-arrow-down:before {
+  content: "\e790";
 }
-.el-submenu__title{
+.el-submenu__title {
   width: 200px;
-
 }
 .menu-wrapper {
   height: 79%;
@@ -145,21 +135,18 @@ export default {
   height: 120px;
   padding: 15px 0 5px;
 }
-.page-scroll {
-  height: 100%;
-  // position: relative;
-  // top: 150px;
-}
 
-/deep/ .el-scrollbar__wrap {
-  overflow: scroll;
-  width: 110%;
-  height: 120%;
-}
 
-/deep/ .page-scroll .el-scrollbar__wrap {
+.scroll-type{
+  height: 523px;
   overflow-x: hidden;
+
 }
+.scroll-type::-webkit-scrollbar{
+   display: none;
+}
+
+
 .sidebar_face {
   // margin: 10% 10% 0% 10%;
   height: 200px;

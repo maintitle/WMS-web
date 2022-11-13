@@ -33,7 +33,7 @@ export default {
 
 <style lang="scss" scoped>
 .main-contain {
-  height: 93%;
+  height: 93vh;
   .aside-contain {
     height: 100%;
   }
@@ -67,12 +67,6 @@ export default {
   line-height: 200px;
 }
 
-.el-main {
-  background-color: white;
-  color: #333;
-  text-align: center;
-  line-height: 160px;
-}
 
 body > .el-container {
   margin-bottom: 40px;
