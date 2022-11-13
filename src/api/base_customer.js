@@ -14,3 +14,18 @@ export function deleteCustomer(ids){
         data: ids
     })
 }
+
+export function updateCustomer(data){
+    return request({
+        url: '/base/customer/update',
+        method: 'post',
+        data: data
+    })
+}
+export function addCustomer(data){
+    return request({
+        url: '/base/customer/save',
+        method: 'post',
+        data: data
+    })
+}

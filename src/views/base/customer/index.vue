@@ -54,7 +54,7 @@
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
-      <el-button class="btn-add" @click="handleAddProduct()" size="mini">
+      <el-button class="btn-add" @click="handleAdd()" size="mini">
         添加
       </el-button>
       <!-- 配置列面板 -->
@@ -285,39 +285,45 @@
       :visible.sync="dialogVisible"
       width="40%"
     >
-      <el-form :model="admin" ref="adminForm" label-width="150px" size="small">
+      <el-form :model="admin" label-width="150px" size="small">
         <el-form-item label="客户名称：">
-          <el-input v-model="admin.username" style="width: 250px"></el-input>
+          <el-input
+            v-model="admin.customername"
+            style="width: 250px"
+          ></el-input>
         </el-form-item>
         <el-form-item label="客户地址：">
-          <el-input v-model="admin.nickName" style="width: 250px"></el-input>
+          <el-input v-model="admin.address" style="width: 250px"></el-input>
         </el-form-item>
         <el-form-item label="客户电话：">
-          <el-input v-model="admin.email" style="width: 250px"></el-input>
+          <el-input v-model="admin.telephone" style="width: 250px"></el-input>
         </el-form-item>
         <el-form-item label="邮编">
-          <el-input v-model="admin.email" style="width: 250px"></el-input>
+          <el-input v-model="admin.zip" style="width: 250px"></el-input>
         </el-form-item>
         <el-form-item label="联系人">
-          <el-input v-model="admin.email" style="width: 250px"></el-input>
+          <el-input
+            v-model="admin.connectionpersion"
+            style="width: 250px"
+          ></el-input>
         </el-form-item>
         <el-form-item label="联系人电话">
-          <el-input v-model="admin.email" style="width: 250px"></el-input>
+          <el-input v-model="admin.phone" style="width: 250px"></el-input>
         </el-form-item>
         <el-form-item label="开户银行">
-          <el-input v-model="admin.email" style="width: 250px"></el-input>
+          <el-input v-model="admin.bank" style="width: 250px"></el-input>
         </el-form-item>
         <el-form-item label="银行账号">
-          <el-input v-model="admin.email" style="width: 250px"></el-input>
+          <el-input v-model="admin.account" style="width: 250px"></el-input>
         </el-form-item>
         <el-form-item label="邮箱">
           <el-input v-model="admin.email" style="width: 250px"></el-input>
         </el-form-item>
-        <el-form-item label="	传真">
-          <el-input v-model="admin.email" style="width: 250px"></el-input>
+        <el-form-item label="传真">
+          <el-input v-model="admin.fax" style="width: 250px"></el-input>
         </el-form-item>
         <el-form-item label="是否启用：">
-          <el-radio-group v-model="admin.status">
+          <el-radio-group v-model="admin.available">
             <el-radio :label="1">是</el-radio>
             <el-radio :label="0">否</el-radio>
           </el-radio-group>
@@ -334,8 +340,22 @@
 </template>
 
 <script>
-import { fetchList, deleteCustomer } from "@/api/base_customer";
+import { fetchList, deleteCustomer, updateCustomer,addCustomer } from "@/api/base_customer";
 import { Message } from "element-ui";
+const defaultAdmin = {
+  id: null,
+  customername: null,
+  zip: null,
+  address: null,
+  telephone: null,
+  connectionpersion: null,
+  phone: null,
+  bank: null,
+  account: null,
+  email: null,
+  fax: null,
+  available: null,
+};
 export default {
   data() {
     return {
@@ -349,8 +369,8 @@ export default {
       },
       showColumn: {
         // 列状态：显示（true） / 隐藏（false）
-        id: true, // 姓名列
-        customername: true, // 省份列
+        id: true,
+        customername: true,
         zip: true,
         address: true,
         telephone: true,
@@ -365,6 +385,9 @@ export default {
       total: null,
       listLoading: true,
       list: "",
+      admin: Object.assign({}, defaultAdmin),
+      dialogVisible: false,
+      isEdit: false,
     };
   },
   methods: {
@@ -421,7 +444,33 @@ export default {
     handleUpdate(index, row) {
       this.dialogVisible = true;
       this.isEdit = true;
-      this.admin = Object.assign({}, row);
+      this.admin = row;
+    },
+    handleDialogConfirm() {
+      if (this.isEdit) {
+        updateCustomer(this.admin).then(() => {
+          Message({
+            message: "更新成功",
+            type: "success",
+            duration: 3 * 1000,
+          });
+          this.dialogVisible = false;
+        });
+      } else {
+        addCustomer(this.admin).then(() => {
+          Message({
+            message: "添加成功",
+            type: "success",
+            duration: 3 * 1000,
+          });
+          this.dialogVisible = false;
+        });
+      }
+    },
+    handleAdd() {
+      this.dialogVisible = true;
+      this.isEdit = false;
+      this.admin = Object.assign({}, defaultAdmin);
     },
   },
   created() {
