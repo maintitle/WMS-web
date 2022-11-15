@@ -55,7 +55,7 @@
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
       <el-button class="btn-add" @click="handleAdd()" size="mini">
-        添加
+        添加客户
       </el-button>
       <!-- 配置列面板 -->
       <el-popover
@@ -247,7 +247,7 @@
         </el-table-column>
       </el-table>
     </div>
-    <!-- <div class="batch-operate-container">
+    <div class="batch-operate-container">
       <el-select size="small" v-model="operateType" placeholder="批量操作">
         <el-option
           v-for="item in operates"
@@ -266,7 +266,7 @@
       >
         确定
       </el-button>
-    </div> -->
+    </div>
     <div class="pagination-container">
       <el-pagination
         background
@@ -283,8 +283,7 @@
     <el-dialog
       :title="isEdit ? '编辑' : '添加'"
       :visible.sync="dialogVisible"
-      width="40%"
-    >
+      width="40%">
       <el-form :model="admin" label-width="150px" size="small">
         <el-form-item label="客户名称：">
           <el-input
@@ -340,7 +339,13 @@
 </template>
 
 <script>
-import { fetchList, deleteCustomer, updateCustomer,addCustomer } from "@/api/base_customer";
+import {
+  fetchList,
+  deleteCustomer,
+  updateCustomer,
+  addCustomer,
+  updateStatus,
+} from "@/api/base_customer";
 import { Message } from "element-ui";
 const defaultAdmin = {
   id: null,
@@ -382,12 +387,28 @@ export default {
         fax: true,
         available: true,
       },
+      operates: [
+        {
+          label: "批量删除",
+          value: "batchDelete",
+        },
+        {
+          label: "激活",
+          value: "batchStatusActive",
+        },
+        {
+          label: "冻结",
+          value: "batchStatusDeActive",
+        },
+      ],
+      operateType: null,
       total: null,
       listLoading: true,
-      list: "",
+      list: [],
       admin: Object.assign({}, defaultAdmin),
       dialogVisible: false,
       isEdit: false,
+      multipleSelection: [],
     };
   },
   methods: {
@@ -429,16 +450,9 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        let ids = [];
-        ids.push(row.id);
-        deleteCustomer(ids).then(() => {
-          Message({
-            message: "删除成功",
-            type: "success",
-            duration: 3 * 1000,
-          });
-          this.getList();
-        });
+        let cids = [];
+        cids.push(row.id);
+        this.removeCustomer(cids);
       });
     },
     handleUpdate(index, row) {
@@ -455,6 +469,7 @@ export default {
             duration: 3 * 1000,
           });
           this.dialogVisible = false;
+          this.getList();
         });
       } else {
         addCustomer(this.admin).then(() => {
@@ -464,6 +479,7 @@ export default {
             duration: 3 * 1000,
           });
           this.dialogVisible = false;
+          this.getList();
         });
       }
     },
@@ -471,6 +487,76 @@ export default {
       this.dialogVisible = true;
       this.isEdit = false;
       this.admin = Object.assign({}, defaultAdmin);
+    },
+    handleBatchOperate() {
+      if (this.operateType == null) {
+        this.$message({
+          message: "请选择操作类型",
+          type: "warning",
+          duration: 1000,
+        });
+        return;
+      }
+      if (this.multipleSelection == null || this.multipleSelection.length < 1) {
+        this.$message({
+          message: "请选择要操作的客户",
+          type: "warning",
+          duration: 1000,
+        });
+        return;
+      }
+      this.$confirm("是否要进行该批量操作?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        let cids = [];
+        for (let i = 0; i < this.multipleSelection.length; i++) {
+          cids.push(this.multipleSelection[i].id);
+        }
+        switch (this.operateType) {
+          case this.operates[0].value:
+            this.removeCustomer(cids);
+            break;
+          case this.operates[1].value:
+            this.updateCustomerStatus(cids, 1);
+            break;
+          case this.operates[2].value:
+            this.updateCustomerStatus(cids, 0);
+            break;
+          default:
+            break;
+        }
+        this.getList();
+      });
+    },
+    removeCustomer(cids) {
+      deleteCustomer(cids).then(() => {
+        Message({
+          message: "删除成功",
+          type: "success",
+          duration: 3 * 1000,
+        });
+        this.getList();
+      });
+    },
+    updateCustomerStatus(cids, status) {
+      updateStatus(cids,status).then(() => {
+        Message({
+          message: "更新成功",
+          type: "success",
+          duration: 3 * 1000,
+        });
+        this.getList();
+      });
+    },
+    handleShowStatusChange(index, row) {
+      let cids = [];
+      cids.push(row.id)
+      this.updateCustomerStatus(cids,row.available)
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val
     },
   },
   created() {
@@ -480,13 +566,4 @@ export default {
 </script>
 
 <style scoped>
-/* 控制淡入淡出效果 */
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.3s;
-}
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
 </style>

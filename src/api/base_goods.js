@@ -1,42 +1,41 @@
 import request from '@/utils/request'
-
 export function fetchList(params){
     return request({
-        url:'/base/customer/list',
-        method:'get',
-        params:params
+        url: '/base/goods/list',
+        method: "get",
+        params: params
     })
 }
-export function deleteCustomer(ids){
+export function deleteGoods(ids){
     return request({
-        url: '/base/customer/delete',
+        url: '/base/goods/delete',
         method: 'post',
         data: ids
     })
 }
 
-export function updateCustomer(data){
+export function updateGoods(data){
     return request({
-        url: '/base/customer/update',
+        url: '/base/goods/update',
         method: 'post',
         data: data
     })
 }
-export function addCustomer(data){
+export function addGoods(data){
     return request({
-        url: '/base/customer/save',
+        url: '/base/goods/save',
         method: 'post',
         data: data
     })
 }
 
-export function updateStatus(cids,status){
+export function updateStatus(gids,status){
     return request({
-        url: '/base/customer/update/status',
+        url: '/base/goods/update/status',
         method: 'post',
         params: {
             status: status
         },
-        data: cids
+        data: gids
     })
 }

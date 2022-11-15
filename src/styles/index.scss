@@ -69,7 +69,7 @@
 }
 
 //搜索栏样式
-.filter-container {}
+// .filter-container {}
 
 .app-main {
   min-height: 100%
@@ -98,7 +98,7 @@
 //分页栏样式
 .pagination-container {
   display: inline-block;
-  float: right;
+  // float: right;
   margin-top: 20px;
 }
 
@@ -110,4 +110,13 @@
   width: 720px;
   padding: 35px 35px 15px 35px;
   margin: 20px auto;
+}
+/* 控制淡入淡出效果 */
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.3s;
+}
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
