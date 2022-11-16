@@ -1,5 +1,5 @@
 <template>
-  <h1>system_menu</h1>
+  <h1>ware_puchase</h1>
 </template>
 
 <script>

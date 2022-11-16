@@ -60,23 +60,35 @@ export const asyncRouterMap = [
 
     },
     {
-        path: '/import',
+        path: '/ware',
         component: Layout,
-        redirect: '/import/goods',
-        name: 'import',
-        meta: { title: '进货管理', icon: 'import' },
+        redirect: '/ware/repository',
+        name: 'ware',
+        meta: { title: '仓库管理', icon: 'ware' },
         children: [{
-            path: "goods",
-            name: "import_goods",
-            component: () => import('@/views/import/goods/index'),
-            meta: { title: '商品进货', icon: 'import_goods' }
+            path: "site",
+            name: "ware_site",
+            component: () => import('@/views/ware/site/index'),
+            meta: { title: '商品进货', icon: 'ware_site' }
         },
         {
-            path: "return",
-            name: "import_return",
-            component: () => import('@/views/import/return/index'),
-            meta: { title: '商品退货查询', icon: 'import_return' }
+            path: "repository",
+            name: "ware_repository",
+            component: () => import('@/views/ware/repository/index'),
+            meta: { title: '商品库存', icon: 'ware_repository' }
         },
+        {
+            path: "requirement",
+            name: "ware_requirement",
+            component: () => import('@/views/ware/requirement/index'),
+            meta: { title: '采购需求', icon: 'ware_requirement' }
+        },
+        {
+            path: "puchase",
+            name: "ware_puchase",
+            component: () => import('@/views/ware/puchase/index'),
+            meta: { title: '采购单', icon: 'ware_puchase' }
+        }
         ]
     },
     {
@@ -110,12 +122,6 @@ export const asyncRouterMap = [
             name: "system_dept",
             component: () => import('@/views/system/dept/index'),
             meta: { title: '部门管理', icon: 'system_dept' }
-        },
-        {
-            path: "menu",
-            name: "system_menu",
-            component: () => import('@/views/system/menu/index'),
-            meta: { title: '菜单管理', icon: 'system_menu' }
         },
         {
             path: "permission",
@@ -155,12 +161,6 @@ export const asyncRouterMap = [
             component: () => import('@/views/other/board/index'),
             meta: { title: '系统公告', icon: 'other_board' }
         },
-        {
-            path: "iconic",
-            name: "other_iconic",
-            component: () => import('@/views/other/iconic/index'),
-            meta: { title: '图标管理', icon: 'other_iconic' }
-        }
         ]
     },
     { path: '*', redirect: '/404', hidden: true }

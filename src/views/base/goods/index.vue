@@ -96,11 +96,6 @@
               <el-checkbox v-model="showColumn.description"
                 >商品描述</el-checkbox
               >
-              <el-checkbox v-model="showColumn.price">销售价格</el-checkbox>
-              <el-checkbox v-model="showColumn.number">数量</el-checkbox>
-              <el-checkbox v-model="showColumn.threshold"
-                >库存预警值</el-checkbox
-              >
               <el-checkbox v-model="showColumn.goodsimg">商品图片</el-checkbox>
               <el-checkbox v-model="showColumn.goodspackage">规格</el-checkbox>
               <el-checkbox v-model="showColumn.size">包装</el-checkbox>
@@ -183,31 +178,6 @@
           :show-overflow-tooltip="true"
         >
           <template slot-scope="scope">{{ scope.row.description }}</template>
-        </el-table-column>
-        <el-table-column
-          v-if="showColumn.price"
-          label="销售价格"
-          width="120"
-          align="center"
-        >
-          <template slot-scope="scope">{{ scope.row.price }}</template>
-        </el-table-column>
-        <el-table-column
-          v-if="showColumn.number"
-          label="数量"
-          width="140"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-          <template slot-scope="scope">{{ scope.row.number }}</template>
-        </el-table-column>
-        <el-table-column
-          v-if="showColumn.threshold"
-          label="库存预警值"
-          width="140"
-          align="center"
-        >
-          <template slot-scope="scope">{{ scope.row.threshold }}</template>
         </el-table-column>
         <el-table-column
           v-if="showColumn.goodsimg"
@@ -356,17 +326,8 @@
         <el-form-item label="商品描述">
           <el-input v-model="goods.description" style="width: 250px"></el-input>
         </el-form-item>
-        <el-form-item label="销售价格">
-          <el-input v-model="goods.price" style="width: 250px"></el-input>
-        </el-form-item>
-        <el-form-item label="数量">
-          <el-input v-model="goods.number" style="width: 250px"></el-input>
-        </el-form-item>
-        <el-form-item label="库存预警值">
-          <el-input v-model="goods.threshold" style="width: 250px"></el-input>
-        </el-form-item>
         <el-form-item label="商品图片">
-          <single-upload :url="goods.goodsimg"></single-upload>
+          <single-upload v-model="goods.goodsimg"></single-upload>
         </el-form-item>
         <el-form-item label="规格">
           <el-input
@@ -446,9 +407,6 @@ export default {
         providername: true,
         produceplace: true,
         description: true,
-        price: true,
-        number: true,
-        threshold: true,
         goodsimg: true,
         goodspackage: true,
         size: true,
@@ -633,6 +591,11 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
+  },
+  mounted() {
+    this.$on("input", (val) => {
+      console.log(val);
+    });
   },
   created() {
     this.getList();

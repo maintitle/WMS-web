@@ -1,5 +1,5 @@
 <template>
-  <h1>iconic</h1>
+  <h1>ware_repository</h1>
 </template>
 
 <script>

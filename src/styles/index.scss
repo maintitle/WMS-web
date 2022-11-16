@@ -111,12 +111,24 @@
   padding: 35px 35px 15px 35px;
   margin: 20px auto;
 }
+
 /* 控制淡入淡出效果 */
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s;
 }
+
 .fade-enter,
 .fade-leave-to {
   opacity: 0;
 }
+
+// 解决upload回显抖动
+// .el-upload-list__item.is-ready {
+//   display: none;
+// }
+// .el-upload-list__item {
+
+// transition: none !important;
+
+// }

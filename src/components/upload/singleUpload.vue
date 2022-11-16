@@ -1,7 +1,6 @@
 <template>
   <el-upload
     class="upload-demo"
-    ref="upload"
     :action="' '"
     :file-list="fileList"
     :on-remove="handleRemove"
@@ -32,8 +31,12 @@ import { Message } from "element-ui";
 import { getUUID, getFileExtension } from "@/utils";
 
 export default {
+  props: {
+    value: String,
+  },
   data() {
     return {
+      fileList: [],
       dataObj: {
         policy: "",
         signature: "",
@@ -48,20 +51,11 @@ export default {
       dir: "",
       imgpath: "",
       isDisabled: true,
-      fileList: [
-        {
-          name: "food.jpeg",
-          url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-        },
-        {
-          name: "food2.jpeg",
-          url: "https://fuss10.elemecdn.com/3/63/4e7f3a15429bfda99bce42a18cdd1jpeg.jpeg?imageMogr2/thumbnail/360x360/format/webp/quality/100",
-        },
-      ],
     };
   },
   methods: {
     emitInput(val) {
+      console.log("emit",val)
       this.$emit("input", val);
     },
     handleAvatarChangeIcon(file, fileList) {
@@ -77,7 +71,7 @@ export default {
         return false;
       } else if (isLt2M && (isPNG || isJPG)) {
         this.iconformData.img = file.raw; //图片的url
-        this.iconformData.name = getUUID + getFileExtension(file.name); //图片的名字
+        this.iconformData.name = getUUID() + getFileExtension(file.name); //图片的名字
         this.isDisabled = false;
       }
     },
@@ -117,36 +111,52 @@ export default {
       });
     },
     handleRemove(file, fileList) {
-      console.log("asd", file, fileList);
+      console.log(file, fileList);
     },
     handleBeforeRemove(file, fileLis) {
-      console.log(file);
+      if(file.status == "ready"){
+        return true
+      }
+      console.log(file,fileLis);
       deleteFile(file.url).then(() => {
         Message({
           message: "删除成功",
           type: "success",
           duration: 3 * 1000,
         });
+        this.emitInput("");
         return true;
       });
-      return false;
     },
   },
-  computed: {
-    imageUrl() {
-      if (this.url == null && this.url == "") {
-        return null;
-      }
-      return null;
-    },
-    imageName() {
-      if (this.url != null && this.url !== "") {
-        return this.url.substr(this.url.lastIndexOf("/") + 1);
-      } else {
-        return null;
-      }
+  watch: {
+    value: {
+      handler(val) {
+        if (val) {
+          let temp = 1;
+          // 首先将值转为数组
+          const list = Array.isArray(val) ? val : this.value.split(",");
+          console.log(list)
+          // 然后将数组转为对象数组
+          this.fileList = list.map((item) => {
+            if (typeof item === "string") {
+              item = {
+                name: item.substr(item.lastIndexOf("/") + 1),
+                url: item,
+              };
+            }
+            item.uid = item.uid || new Date().getTime() + temp++;
+            return item;
+          });
+        } else {
+          this.fileList = [];
+          return [];
+        }
+      },
+      deep: true,
+      immediate: true,
     },
   },
 };
-
+</script>
 <style></style>;

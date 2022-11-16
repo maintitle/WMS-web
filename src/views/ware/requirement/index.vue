@@ -1,7 +1,6 @@
 <template>
-  <h1>import_goods</h1>
+  <h1>ware_requirement</h1>
 </template>
-
 <script>
 export default {
 

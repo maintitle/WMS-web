@@ -1,5 +1,5 @@
 <template>
-  <h1>import_return</h1>
+  <h1>ware_site</h1>
 </template>
 
 <script>
