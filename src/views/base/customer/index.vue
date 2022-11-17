@@ -102,7 +102,6 @@
     </el-card>
     <div class="table-container">
       <el-table
-        ref="productTable"
         :data="list"
         style="width: 100%"
         @selection-change="handleSelectionChange"

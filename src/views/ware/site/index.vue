@@ -1,13 +1,385 @@
 <template>
-  <h1>ware_site</h1>
+  <div class="app-container">
+    <el-card class="filter-container" shadow="never">
+      <div>
+        <i class="el-icon-search" style="margin-right: 5px"></i>
+        <span>筛选搜索</span>
+        <el-button
+          style="float: right"
+          @click="handleSearchList()"
+          type="primary"
+          size="small"
+        >
+          查询结果
+        </el-button>
+        <el-button
+          style="float: right; margin-right: 15px"
+          @click="handleResetSearch()"
+          size="small"
+        >
+          重置
+        </el-button>
+      </div>
+      <div style="margin-top: 15px">
+        <el-form
+          :inline="true"
+          :model="listQuery"
+          size="small"
+          label-width="140px"
+        >
+          <el-form-item label="仓库名或地址：">
+            <el-input
+              style="width: 203px"
+              v-model="listQuery.key"
+              placeholder="仓库名或地址"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="区域码：">
+            <el-input
+              style="width: 203px"
+              v-model="listQuery.code"
+              placeholder="区域码"
+            ></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
+    </el-card>
+    <el-card class="operate-container" shadow="never">
+      <i class="el-icon-tickets"></i>
+      <span>数据列表</span>
+      <el-button class="btn-add" @click="handleAdd()" size="mini">
+        添加仓库
+      </el-button>
+      <!-- 配置列面板 -->
+      <el-popover
+        placement="bottom"
+        :width="600"
+        :visible="visible"
+        style="float: right"
+      >
+        <!-- 配置列面板 -->
+        <transition name="fade">
+          <div>
+            <div>选择显示字段</div>
+            <div>
+              <el-checkbox v-model="showColumn.id" disabled>编号</el-checkbox>
+              <el-checkbox v-model="showColumn.name">仓库名</el-checkbox>
+              <el-checkbox v-model="showColumn.address">仓库地址</el-checkbox>
+              <el-checkbox v-model="showColumn.areacode">区域码</el-checkbox>
+            </div>
+          </div>
+        </transition>
+        <div style="text-align: right; margin: 0">
+          <el-button size="small" icon="el-icon-refresh" @click="resetList()"
+            >重置展示列</el-button
+          >
+        </div>
+        <template #reference>
+          <i style="font-size: 22px; cursor: pointer" @click="visible = true"
+            ><el-button size="mini">选择显示字段</el-button></i
+          >
+        </template>
+      </el-popover>
+    </el-card>
+    <div class="table-container">
+      <el-table
+        :data="list"
+        style="width: 100%"
+        @selection-change="handleSelectionChange"
+        v-loading="listLoading"
+        border
+      >
+        <el-table-column
+          type="selection"
+          width="60"
+          align="center"
+        ></el-table-column>
+        <el-table-column
+          v-if="showColumn.id"
+          label="编号"
+          width="100"
+          align="center"
+          fixed="left"
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">{{ scope.row.id }}</template>
+        </el-table-column>
+        <el-table-column
+          v-if="showColumn.name"
+          label="仓库名"
+          width="120"
+          align="center"
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">{{ scope.row.name }}</template>
+        </el-table-column>
+        <el-table-column
+          v-if="showColumn.address"
+          label="仓库地址"
+          align="center"
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">{{ scope.row.address }}</template>
+        </el-table-column>
+        <el-table-column
+          v-if="showColumn.areacode"
+          label="区域编码"
+          align="center"
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">{{ scope.row.areacode }}</template>
+        </el-table-column>
+        <el-table-column label="操作" width="160" align="center" fixed="right">
+          <template slot-scope="scope">
+            <p>
+              <el-button
+                size="mini"
+                @click="handleUpdate(scope.$index, scope.row)"
+                >编辑
+              </el-button>
+              <el-button
+                size="mini"
+                type="danger"
+                @click="handleDelete(scope.$index, scope.row)"
+                >删除
+              </el-button>
+            </p>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+    <div class="batch-operate-container">
+      <el-select size="small" v-model="operateType" placeholder="批量操作">
+        <el-option
+          v-for="item in operates"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+      <el-button
+        style="margin-left: 20px"
+        class="search-button"
+        @click="handleBatchOperate()"
+        type="primary"
+        size="small"
+      >
+        确定
+      </el-button>
+    </div>
+    <div class="pagination-container">
+      <el-pagination
+        background
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        layout="total, sizes,prev, pager, next,jumper"
+        :page-size="listQuery.limit"
+        :page-sizes="[5, 10, 15]"
+        :current-page.sync="listQuery.page"
+        :total="total"
+      >
+      </el-pagination>
+    </div>
+    <el-dialog
+      :title="isEdit ? '编辑' : '添加'"
+      :visible.sync="dialogVisible"
+      width="40%"
+    >
+      <el-form :model="site" label-width="150px" size="small">
+        <el-form-item label="仓库名：">
+          <el-input v-model="site.name" style="width: 250px"></el-input>
+        </el-form-item>
+        <el-form-item label="仓库地址：">
+          <el-input v-model="site.address" style="width: 250px"></el-input>
+        </el-form-item>
+        <el-form-item label="区域编码：">
+          <el-input v-model="site.areacode" style="width: 250px"></el-input>
+        </el-form-item>
+      </el-form>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogVisible = false" size="small">取 消</el-button>
+        <el-button type="primary" @click="handleDialogConfirm()" size="small"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
+  </div>
 </template>
 
 <script>
+import { Message } from "element-ui";
+import { fetchList, deleteSite, updateSite, addSite } from "@/api/ware_site";
+const defaultSite = {
+  id: null,
+  name: null,
+  address: null,
+  areacode: null,
+};
 export default {
-
-}
+  data() {
+    return {
+      visible: false,
+      listQuery: {
+        key: "",
+        code: "",
+        page: 1,
+        limit: 5,
+      },
+      showColumn: {
+        // 列状态：显示（true） / 隐藏（false）
+        id: true,
+        name: true,
+        address: true,
+        areacode: true,
+      },
+      operates: [
+        {
+          label: "批量删除",
+          value: "batchDelete",
+        },
+      ],
+      operateType: null,
+      total: null,
+      listLoading: true,
+      list: [],
+      site: Object.assign({}, defaultSite),
+      dialogVisible: false,
+      isEdit: false,
+      multipleSelection: [],
+    };
+  },
+  methods: {
+    getList() {
+      this.listLoading = true;
+      fetchList(this.listQuery).then((response) => {
+        this.listLoading = false;
+        this.list = response.data.list;
+        this.total = response.data.totalCount;
+      });
+    },
+    handleSearchList() {
+      this.getList();
+    },
+    handleResetSearch() {
+      this.listQuery.key = "";
+      this.listQuery.code = "";
+      this.getList();
+    },
+    handleAdd() {
+      this.dialogVisible = true;
+      this.isEdit = false;
+      this.site = Object.assign({}, defaultSite);
+    },
+    resetList() {
+      // 重置展示列
+      for (let item in this.showColumn) {
+        this.showColumn[item] = true;
+      }
+    },
+    handleUpdate(index, row) {
+      this.dialogVisible = true;
+      this.isEdit = true;
+      this.site = row;
+    },
+    handleDelete(index, row) {
+      this.$confirm("是否要进行删除操作?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        let ids = [];
+        ids.push(row.id);
+        this.removeSite(ids);
+      });
+    },
+    handleBatchOperate() {
+      if (this.operateType == null) {
+        this.$message({
+          message: "请选择操作类型",
+          type: "warning",
+          duration: 1000,
+        });
+        return;
+      }
+      if (this.multipleSelection == null || this.multipleSelection.length < 1) {
+        this.$message({
+          message: "请选择要操作的站点",
+          type: "warning",
+          duration: 1000,
+        });
+        return;
+      }
+      this.$confirm("是否要进行该批量操作?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      }).then(() => {
+        let ids = [];
+        for (let i = 0; i < this.multipleSelection.length; i++) {
+          ids.push(this.multipleSelection[i].id);
+        }
+        switch (this.operateType) {
+          case this.operates[0].value:
+            this.removeSite(ids);
+            break;
+          default:
+            break;
+        }
+        this.getList();
+      });
+    },
+    handleSizeChange(val) {
+      this.listQuery.page = 1;
+      this.listQuery.limit = val;
+      this.getList();
+    },
+    handleCurrentChange(val) {
+      this.listQuery.page = val;
+      this.getList();
+    },
+    handleDialogConfirm() {
+      if (this.isEdit) {
+        updateSite(this.site).then(() => {
+          Message({
+            message: "更新成功",
+            type: "success",
+            duration: 3 * 1000,
+          });
+          this.dialogVisible = false;
+          this.getList();
+        });
+      } else {
+        addSite(this.site).then(() => {
+          Message({
+            message: "添加成功",
+            type: "success",
+            duration: 3 * 1000,
+          });
+          this.dialogVisible = false;
+          this.getList();
+        });
+      }
+    },
+    removeSite(ids) {
+      deleteSite(ids).then(() => {
+        Message({
+          message: "删除成功",
+          type: "success",
+          duration: 3 * 1000,
+        });
+        this.getList();
+      });
+    },
+    handleSelectionChange(val) {
+      this.multipleSelection = val;
+    },
+  },
+  created() {
+    this.getList();
+  },
+};
 </script>
 
 <style>
-
 </style>
