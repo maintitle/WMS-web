@@ -1,37 +1,31 @@
 import request from '@/utils/request'
 export function fetchList(params){
     return request({
-        url:'/ware/site/list',
+        url:'/ware/requirement/list',
         method:'get',
         params:params
     })
 }
-export function deleteSite(ids){
+export function deleteRequirement(ids){
     return request({
-        url: '/ware/site/delete',
+        url: '/ware/requirement/delete',
         method: 'post',
         data: ids
     })
 }
 
-export function updateSite(data){
+export function updateRequirement(data){
     return request({
-        url: '/ware/site/update',
+        url: '/ware/requirement/update',
         method: 'post',
         data: data
     })
 }
-export function addSite(data){
+export function addRequirement(data){
     return request({
-        url: '/ware/site/save',
+        url: '/ware/requirement/save',
         method: 'post',
         data: data
     })
 }
 
-export function getWareNameAndId(){
-    return request({
-        url: '/ware/site/listNameAndId',
-        method: 'get',
-    })
-}

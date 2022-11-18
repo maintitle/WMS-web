@@ -41,7 +41,7 @@ export function updateStatus(pids,status){
 }
 export function getProductNameAndId(){
     return request({
-        url: '/base/provide/getListNameAndId',
+        url: '/base/provide/listNameAndId',
         method: 'get',
     })
 }

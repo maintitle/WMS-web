@@ -39,3 +39,9 @@ export function updateStatus(gids,status){
         data: gids
     })
 }
+export function getGoodsNameAndId(){
+    return request({
+        url: '/base/goods/listNameAndId',
+        method: 'get',
+    })
+}
