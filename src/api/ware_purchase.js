@@ -21,3 +21,26 @@ export function mergeRequirement(items,purchaseId) {
         }
     })
 }
+
+export function deletePurchase(ids){
+    return request({
+        url: '/ware/purchase/delete',
+        method: 'post',
+        data: ids
+    })
+}
+
+export function updatePurchase(data){
+    return request({
+        url: '/ware/purchase/update',
+        method: 'post',
+        data: data
+    })
+}
+export function addPurchase(data){
+    return request({
+        url: '/ware/purchase/save',
+        method: 'post',
+        data: data
+    })
+}

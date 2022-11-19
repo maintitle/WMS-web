@@ -27,18 +27,6 @@
           size="small"
           label-width="140px"
         >
-          <el-form-item label="仓库：">
-            <el-select v-model="listQuery.wareId" placeholder="请选择仓库">
-              <template>
-                <el-option
-                  v-for="item in ware"
-                  :key="item.wareId"
-                  :label="item.wareName"
-                  :value="item.wareId"
-                ></el-option>
-              </template>
-            </el-select>
-          </el-form-item>
           <el-form-item label="状态：">
             <el-select v-model="listQuery.status" placeholder="请选择状态">
               <template>
@@ -65,7 +53,7 @@
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
       <el-button class="btn-add" @click="handleAdd()" size="mini">
-        添加采购需求
+        添加采购单
       </el-button>
       <!-- 配置列面板 -->
       <el-popover
@@ -80,11 +68,14 @@
             <div>选择显示字段</div>
             <div>
               <el-checkbox v-model="showColumn.id" disabled>编号</el-checkbox>
-              <el-checkbox v-model="showColumn.purchase">采购单</el-checkbox>
-              <el-checkbox v-model="showColumn.goods">商品</el-checkbox>
-              <el-checkbox v-model="showColumn.num">采购数量</el-checkbox>
-              <el-checkbox v-model="showColumn.price">采购金额</el-checkbox>
-              <el-checkbox v-model="showColumn.ware">仓库</el-checkbox>
+              <el-checkbox v-model="showColumn.purchaseId"
+                >采购人ID</el-checkbox
+              >
+              <el-checkbox v-model="showColumn.purchaseName"
+                >采购人姓名</el-checkbox
+              >
+              <el-checkbox v-model="showColumn.phone">联系人电话</el-checkbox>
+              <el-checkbox v-model="showColumn.amount">总金额</el-checkbox>
               <el-checkbox v-model="showColumn.createTime"
                 >创建时间</el-checkbox
               >
@@ -131,45 +122,37 @@
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
         <el-table-column
-          v-if="showColumn.purchase"
-          label="采购单"
+          v-if="showColumn.purchaseId"
+          label="采购人ID"
           width="120"
           align="center"
           :show-overflow-tooltip="true"
         >
-          <template slot-scope="scope">{{ scope.row.purchaseId }}</template>
+          <template slot-scope="scope">{{ scope.row.assigneeId }}</template>
         </el-table-column>
         <el-table-column
-          v-if="showColumn.goods"
-          label="采购商品"
+          v-if="showColumn.purchaseName"
+          label="采购人姓名"
           align="center"
           :show-overflow-tooltip="true"
         >
-          <template slot-scope="scope">{{ scope.row.goodsName }}</template>
+          <template slot-scope="scope">{{ scope.row.assigneeName }}</template>
         </el-table-column>
         <el-table-column
-          v-if="showColumn.num"
-          label="采购数量"
+          v-if="showColumn.phone"
+          label="联系人电话"
           align="center"
           :show-overflow-tooltip="true"
         >
-          <template slot-scope="scope">{{ scope.row.num }}</template>
+          <template slot-scope="scope">{{ scope.row.phone }}</template>
         </el-table-column>
         <el-table-column
-          v-if="showColumn.price"
-          label="采购金额"
+          v-if="showColumn.amount"
+          label="总金额"
           align="center"
           :show-overflow-tooltip="true"
         >
-          <template slot-scope="scope">{{ scope.row.price }}</template>
-        </el-table-column>
-        <el-table-column
-          v-if="showColumn.ware"
-          label="仓库"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-          <template slot-scope="scope">{{ scope.row.wareName }}</template>
+          <template slot-scope="scope">{{ scope.row.amount }}</template>
         </el-table-column>
         <el-table-column
           width="100"
@@ -191,11 +174,9 @@
           <template slot-scope="scope">
             <el-tag v-if="scope.row.status == 0">新建</el-tag>
             <el-tag type="info" v-if="scope.row.status == 1">已分配</el-tag>
-            <el-tag type="wanring" v-if="scope.row.status == 2"
-              >正在采购</el-tag
-            >
+            <el-tag type="wanring" v-if="scope.row.status == 2">已领取</el-tag>
             <el-tag type="success" v-if="scope.row.status == 3">已完成</el-tag>
-            <el-tag type="danger" v-if="scope.row.status == 4">采购失败</el-tag>
+            <el-tag type="danger" v-if="scope.row.status == 4">有异常</el-tag>
           </template>
         </el-table-column>
         <el-table-column label="操作" width="160" align="center" fixed="right">
@@ -255,59 +236,26 @@
       :visible.sync="dialogVisible"
       width="40%"
     >
-      <el-form :model="requirement" label-width="150px" size="small">
-        <el-form-item
-          label="采购单："
-          v-if="isEdit && (requirement.status == 0 || requirement.status == 1)">
-          <el-select
-            v-model="requirement.purchaseId"
-            placeholder="请选择采购单"
-            clearable
-          >
+      <el-form :model="purchase" label-width="150px" size="small">
+        <el-form-item label="采购人：">
+          <el-select v-model="purchase.assigneeId" placeholder="请选择采购人" clearable>
             <template>
               <el-option
-                v-for="item in purchasetableData"
+                v-for="item in userList"
                 :key="item.id"
-                :label="item.id"
+                :label="item.name"
                 :value="item.id"
               >
-                <span style="float: left;" >|采购单ID：{{ item.id }}|</span>
+                <span style="float: left">|采购人ID：{{ item.id }}|</span>
                 <span style="float: right; color: #8492a6; font-size: 13px"
-                  >采购人员：{{ item.assigneeName }}：{{ item.phone }}</span
+                  >{{ item.name }}:{{item.phone}}</span
                 >
               </el-option>
             </template>
           </el-select>
         </el-form-item>
-        <el-form-item label="采购商品：">
-          <el-select v-model="requirement.goodsId" placeholder="请选择商品">
-            <template>
-              <el-option
-                v-for="item in goods"
-                :key="item.goodsId"
-                :label="item.goodsName"
-                :value="item.goodsId"
-              ></el-option>
-            </template>
-          </el-select>
-        </el-form-item>
-        <el-form-item label="采购数量：">
-          <el-input v-model="requirement.num" style="width: 250px"></el-input>
-        </el-form-item>
         <el-form-item label="采购金额：">
-          <el-input v-model="requirement.price" style="width: 250px"></el-input>
-        </el-form-item>
-        <el-form-item label="仓库：">
-          <el-select v-model="requirement.wareId" placeholder="请选择仓库">
-            <template>
-              <el-option
-                v-for="item in ware"
-                :key="item.wareId"
-                :label="item.wareName"
-                :value="item.wareId"
-              ></el-option>
-            </template>
-          </el-select>
+          <el-input v-model="purchase.amount" style="width: 250px"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -317,72 +265,35 @@
         >
       </span>
     </el-dialog>
-
-    <el-dialog title="合并到整单" :visible.sync="mergedialogVisible">
-      <!-- id  assignee_id  assignee_name  phone   priority status -->
-      <el-select v-model="purchaseId" placeholder="请选择" clearable filterable>
-        <el-option
-          v-for="item in purchasetableData"
-          :key="item.id"
-          :label="item.id"
-          :value="item.id"
-        >
-          <span style="float: left">{{ item.id }}</span>
-          <span style="float: right; color: #8492a6; font-size: 13px"
-            >{{ item.assigneeName }}：{{ item.phone }}</span
-          >
-        </el-option>
-      </el-select>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="mergedialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="merge()">确 定</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 <script>
 import { Message } from "element-ui";
 import {
   fetchList,
-  deleteRequirement,
-  updateRequirement,
-  addRequirement,
-} from "@/api/ware_requirement";
-import { getWareNameAndId } from "@/api/ware_site";
-import { getGoodsNameAndId } from "@/api/base_goods";
-import { getUnreceivedPurchase, mergeRequirement } from "@/api/ware_purchase";
-const defaultRequirement = {
-  id: null,
-  goodsName: null,
-  wareName: null,
-  purchaseId: null,
-  goodsId: null,
-  num: null,
-  price: null,
-  wareId: null,
-  status: null,
-  createTime: null,
-  updateTime: null,
-};
+  deletePurchase,
+  updatePurchase,
+  addPurchase,
+} from "@/api/ware_purchase";
+import { fetchListAll as fetchListUser } from "@/api/user";
+const defaultPurchase = {};
 export default {
   data() {
     return {
       visible: false,
       listQuery: {
-        key: "",
-        wareId: "",
         status: "",
+        key: "",
         page: 1,
         limit: 5,
       },
       showColumn: {
         // 列状态：显示（true） / 隐藏（false）
         id: true,
-        purchase: true,
-        goods: true,
-        num: true,
-        price: true,
-        ware: true,
+        purchaseId: true,
+        purchaseName: true,
+        phone: true,
+        amount: true,
         createTime: true,
         updateTime: true,
         status: true,
@@ -400,7 +311,7 @@ export default {
         },
         {
           id: 2,
-          name: "正在采购",
+          name: "已领取",
           type: "info",
         },
         {
@@ -410,7 +321,7 @@ export default {
         },
         {
           id: 4,
-          name: "采购失败",
+          name: "有异常",
           type: "danger",
         },
       ],
@@ -419,25 +330,16 @@ export default {
           label: "批量删除",
           value: "batchDelete",
         },
-        {
-          label: "合并整单",
-          value: "mergeRequirement",
-        },
       ],
       operateType: null,
       total: null,
       listLoading: true,
       list: [],
-      ware: [],
-      goods: [],
-      requirement: Object.assign({}, defaultRequirement),
+      purchase: Object.assign({}, defaultPurchase),
       dialogVisible: false,
       isEdit: false,
       multipleSelection: [],
-      mergedialogVisible: false,
-      purchasetableData: [],
-      items: [],
-      purchaseId: "",
+      userList: [],
     };
   },
   methods: {
@@ -453,15 +355,15 @@ export default {
       this.getList();
     },
     handleResetSearch() {
-      this.listQuery.key = "";
-      this.listQuery.status = "";
-      this.listQuery.wareId = "";
+      this.listQuery.status=null;
+      this.listQuery.key=null;
       this.getList();
     },
     handleAdd() {
+      this.getUser();
       this.dialogVisible = true;
       this.isEdit = false;
-      this.requirement = Object.assign({}, defaultRequirement);
+      this.purchase = Object.assign({}, defaultPurchase);
     },
     resetList() {
       // 重置展示列
@@ -470,10 +372,10 @@ export default {
       }
     },
     handleUpdate(index, row) {
-      this.getUnreceivedPurchaseList();
+      this.getUser();
       this.dialogVisible = true;
       this.isEdit = true;
-      this.requirement = row;
+      this.purchase = row;
     },
     handleDelete(index, row) {
       this.$confirm("是否要进行删除操作?", "提示", {
@@ -483,7 +385,7 @@ export default {
       }).then(() => {
         let ids = [];
         ids.push(row.id);
-        this.removeRequirement(ids);
+        this.removePurchase(ids);
       });
     },
     handleBatchOperate() {
@@ -514,12 +416,7 @@ export default {
         }
         switch (this.operateType) {
           case this.operates[0].value:
-            this.removeRequirement(ids);
-            break;
-          case this.operates[1].value:
-            this.getUnreceivedPurchaseList();
-            this.mergedialogVisible = true;
-            this.items = ids;
+            this.removePurchase(ids);
             break;
           default:
             break;
@@ -538,7 +435,7 @@ export default {
     },
     handleDialogConfirm() {
       if (this.isEdit) {
-        updateRequirement(this.requirement).then(() => {
+        updatePurchase(this.purchase).then(() => {
           Message({
             message: "更新成功",
             type: "success",
@@ -548,7 +445,7 @@ export default {
           this.getList();
         });
       } else {
-        addRequirement(this.requirement).then(() => {
+        addPurchase(this.purchase).then(() => {
           Message({
             message: "添加成功",
             type: "success",
@@ -559,8 +456,8 @@ export default {
         });
       }
     },
-    removeRequirement(ids) {
-      deleteRequirement(ids).then(() => {
+    removePurchase(ids) {
+      deletePurchase(ids).then(() => {
         Message({
           message: "删除成功",
           type: "success",
@@ -572,37 +469,14 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-    getWare() {
-      getWareNameAndId().then((response) => {
-        this.ware = response.data;
-      });
-    },
-    getGoods() {
-      getGoodsNameAndId().then((response) => {
-        this.goods = response.data;
-      });
-    },
-    merge() {
-      mergeRequirement(this.items, this.purchaseId).then(() => {
-        Message({
-          message: "合并成功",
-          type: "success",
-          duration: 3 * 1000,
-        });
-        this.mergedialogVisible = false;
-        this.getList();
-      });
-    },
-    getUnreceivedPurchaseList() {
-      getUnreceivedPurchase().then((response) => {
-        this.purchasetableData = response.data;
+    getUser() {
+      fetchListUser().then((response) => {
+        this.userList = response.data;
       });
     },
   },
   created() {
     this.getList();
-    this.getWare();
-    this.getGoods();
   },
 };
 </script>

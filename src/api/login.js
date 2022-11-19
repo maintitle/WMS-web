@@ -34,6 +34,7 @@ export function fetchList(params) {
   })
 }
 
+
 export function createAdmin(data) {
   return request({
     url: '/user/register',

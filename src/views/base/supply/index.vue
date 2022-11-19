@@ -374,7 +374,7 @@ export default {
         connectionpersion: "",
         phone: "",
         page: 1,
-        limlt: 5,
+        limit: 5,
       },
       showColumn: {
         id: true,

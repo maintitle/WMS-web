@@ -1,5 +1,5 @@
 <template>
-     <div class="app-container">
+  <div class="app-container">
     <el-card class="filter-container" shadow="never">
       <div>
         <i class="el-icon-search" style="margin-right: 5px"></i>
@@ -27,17 +27,14 @@
           size="small"
           label-width="140px"
         >
-          <el-form-item label="供应商：">
-            <el-select
-              v-model="listQuery.providerid"
-              placeholder="请选择供应商"
-            >
+          <el-form-item label="仓库：">
+            <el-select v-model="listQuery.wareId" placeholder="请选择仓库">
               <template>
                 <el-option
-                  v-for="item in product"
-                  :key="item.producterid"
-                  :label="item.productername"
-                  :value="item.producterid"
+                  v-for="item in ware"
+                  :key="item.wareId"
+                  :label="item.wareName"
+                  :value="item.wareId"
                 ></el-option>
               </template>
             </el-select>
@@ -45,22 +42,8 @@
           <el-form-item label="商品名称：">
             <el-input
               style="width: 203px"
-              v-model="listQuery.goodsname"
+              v-model="listQuery.key"
               placeholder="请输入商品名称"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="生产批号：">
-            <el-input
-              style="width: 203px"
-              v-model="listQuery.productcode"
-              placeholder="请输入生产批号"
-            ></el-input>
-          </el-form-item>
-          <el-form-item label="批准文号：">
-            <el-input
-              style="width: 203px"
-              v-model="listQuery.promitcode"
-              placeholder="请输入批准文号"
             ></el-input>
           </el-form-item>
         </el-form>
@@ -86,26 +69,12 @@
             <div>选择显示字段</div>
             <div>
               <el-checkbox v-model="showColumn.id" disabled>编号</el-checkbox>
-              <el-checkbox v-model="showColumn.goodsname">商品名称</el-checkbox>
-              <el-checkbox v-model="showColumn.providername"
-                >供应商</el-checkbox
-              >
-              <el-checkbox v-model="showColumn.produceplace"
-                >商品产地</el-checkbox
-              >
-              <el-checkbox v-model="showColumn.description"
-                >商品描述</el-checkbox
-              >
-              <el-checkbox v-model="showColumn.goodsimg">商品图片</el-checkbox>
-              <el-checkbox v-model="showColumn.goodspackage">规格</el-checkbox>
-              <el-checkbox v-model="showColumn.size">包装</el-checkbox>
-              <el-checkbox v-model="showColumn.productcode"
-                >生产批号</el-checkbox
-              >
-              <el-checkbox v-model="showColumn.promitcode"
-                >批准文号</el-checkbox
-              >
-              <el-checkbox v-model="showColumn.available">是否可用</el-checkbox>
+              <el-checkbox v-model="showColumn.goodsId">商品ID</el-checkbox>
+              <el-checkbox v-model="showColumn.goodsName">商品名称</el-checkbox>
+              <el-checkbox v-model="showColumn.wareId">仓库ID</el-checkbox>
+              <el-checkbox v-model="showColumn.wareName">仓库名</el-checkbox>
+              <el-checkbox v-model="showColumn.stock">库存</el-checkbox>
+              <el-checkbox v-model="showColumn.threshold">阈值</el-checkbox>
             </div>
           </div>
         </transition>
@@ -146,100 +115,57 @@
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
         <el-table-column
-          v-if="showColumn.goodsname"
+          v-if="showColumn.goodsId"
+          label="商品ID"
+          width="120"
+          align="center"
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">{{ scope.row.goodsId }}</template>
+        </el-table-column>
+        <el-table-column
+          v-if="showColumn.goodsName"
           label="商品名称"
           width="120"
           align="center"
           :show-overflow-tooltip="true"
         >
-          <template slot-scope="scope">{{ scope.row.goodsname }}</template>
+          <template slot-scope="scope">{{ scope.row.goodsName }}</template>
         </el-table-column>
         <el-table-column
-          v-if="showColumn.providername"
-          label="供应商"
-          width="120"
+          v-if="showColumn.wareId"
+          label="仓库ID"
           align="center"
           :show-overflow-tooltip="true"
         >
-          <template slot-scope="scope">{{ scope.row.providername }}</template>
+          <template slot-scope="scope">{{ scope.row.wareId }}</template>
         </el-table-column>
         <el-table-column
-          v-if="showColumn.produceplace"
-          label="商品产地"
+          v-if="showColumn.wareName"
+          label="仓库名"
           align="center"
           :show-overflow-tooltip="true"
         >
-          <template slot-scope="scope">{{ scope.row.produceplace }}</template>
+          <template slot-scope="scope">{{ scope.row.wareName }}</template>
         </el-table-column>
         <el-table-column
-          v-if="showColumn.description"
-          label="商品描述"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-          <template slot-scope="scope">{{ scope.row.description }}</template>
-        </el-table-column>
-        <el-table-column
-          v-if="showColumn.goodsimg"
-          label="商品图片"
+          v-if="showColumn.stock"
+          label="库存"
           width="140"
           align="center"
         >
           <template slot-scope="scope"
-            ><img style="height: 40px" :src="scope.row.goodsimg"
+            ><img style="height: 40px" :src="scope.row.stock"
           /></template>
         </el-table-column>
         <el-table-column
-          v-if="showColumn.goodspackage"
-          label="规格"
+          v-if="showColumn.threshold"
+          label="阈值"
           width="140"
           align="center"
           :show-overflow-tooltip="true"
         >
-          <template slot-scope="scope">{{ scope.row.goodspackage }}</template>
-        </el-table-column>
-        <el-table-column
-          v-if="showColumn.size"
-          label="包装"
-          width="140"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-          <template slot-scope="scope">{{ scope.row.size }}</template>
-        </el-table-column>
-        <el-table-column
-          v-if="showColumn.productcode"
-          label="生产批号"
-          width="140"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-          <template slot-scope="scope">{{ scope.row.productcode }}</template>
-        </el-table-column>
-        <el-table-column
-          v-if="showColumn.promitcode"
-          label="批准文号"
-          width="140"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-          <template slot-scope="scope">{{ scope.row.promitcode }}</template>
-        </el-table-column>
-        <el-table-column
-          v-if="showColumn.available"
-          label="是否可用"
-          width="140"
-          align="center"
-        >
-          <template slot-scope="scope">
-            <el-switch
-              @change="handleShowStatusChange(scope.$index, scope.row)"
-              :active-value="1"
-              :inactive-value="0"
-              v-model="scope.row.available"
-            >
-            </el-switch>
-          </template>
+          <template slot-scope="scope">{{ scope.row.threshold }}</template>
         </el-table-column>
         <el-table-column label="操作" width="160" align="center" fixed="right">
           <template slot-scope="scope">
@@ -301,27 +227,21 @@
       :visible.sync="dialogVisible"
       width="40%"
     >
-      <el-form :model="goods" label-width="150px" size="small">
-        <el-form-item label="商品名称：">
-          <el-input v-model="goods.goodsname" style="width: 250px"></el-input>
+      <el-form :model="repository" label-width="150px" size="small">
+        <el-form-item label="阈值：">
+          <el-input v-model="repository.threshold" style="width: 250px" placeholder="请输入阈值"></el-input>
         </el-form-item>
-        <el-form-item label="供应商：">
-          <el-select v-model="goods.providerid" placeholder="请选择供应商">
+        <el-form-item label="仓库：">
+          <el-select v-model="repository.wareId" placeholder="请选择仓库">
             <template>
               <el-option
-                v-for="item in product"
-                :key="item.producterid"
-                :label="item.productername"
-                :value="item.producterid"
+                v-for="item in ware"
+                :key="item.wareId"
+                :label="item.wareName"
+                :value="item.wareId"
               ></el-option>
             </template>
           </el-select>
-        </el-form-item>
-        <el-form-item label="商品产地：">
-          <el-input
-            v-model="goods.produceplace"
-            style="width: 250px"
-          ></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -336,59 +256,39 @@
 
 <script>
 import { Message } from "element-ui";
-const defaultGoods = {
+import { fetchList,updateRepository,addRepository,deleteRepository } from "@/api/ware_repository";
+import { getWareNameAndId } from "@/api/ware_site";
+const defaultRepository = {
   id: null,
-  goodsname: null,
-  providerid: null,
-  providername: null,
-  produceplace: null,
-  description: null,
-  price: null,
-  number: null,
+  goodsId: null,
+  goodsName: null,
+  wareId: null,
+  wareName: null,
+  stock: null,
   threshold: null,
-  goodsimg: null,
-  goodspackage: null,
-  size: null,
-  productcode: null,
-  promitcode: null,
-  available: null,
 };
 export default {
   data() {
     return {
       listQuery: {
-        providerid: "",
-        goodsname: "",
-        productcode: "",
-        promitcode: "",
+        wareId: "",
+        key: "",
         page: 1,
-        limlt: 5,
+        limit: 5,
       },
       showColumn: {
         id: true,
-        goodsname: true,
-        providername: true,
-        produceplace: true,
-        description: true,
-        goodsimg: true,
-        goodspackage: true,
-        size: true,
-        productcode: true,
-        promitcode: true,
-        available: true,
+        goodsId: true,
+        goodsName: true,
+        wareId: true,
+        wareName: true,
+        stock: true,
+        threshold: true,
       },
       operates: [
         {
           label: "批量删除",
           value: "batchDelete",
-        },
-        {
-          label: "激活",
-          value: "batchStatusActive",
-        },
-        {
-          label: "冻结",
-          value: "batchStatusDeActive",
         },
       ],
       operateType: null,
@@ -399,8 +299,9 @@ export default {
       listLoading: true,
       list: [],
       total: null,
-      goods: Object.assign({}, defaultGoods),
+      repository: Object.assign({}, defaultRepository),
       multipleSelection: [],
+      ware:[]
     };
   },
   methods: {
@@ -411,16 +312,9 @@ export default {
         this.total = response.data.totalCount;
       });
     },
-    getProduct() {
-      getProductNameAndId().then((response) => {
-        this.product = response.data;
-      });
-    },
     handleResetSearch() {
-      this.listQuery.providerid = "";
-      this.listQuery.goodsname = "";
-      this.listQuery.productcode = "";
-      this.listQuery.promitcode = "";
+      this.listQuery.wareId = "";
+      this.listQuery.key = "";
       this.getList();
     },
     handleSearchList() {
@@ -429,7 +323,7 @@ export default {
     handleAdd() {
       this.dialogVisible = true;
       this.isEdit = false;
-      this.goods = Object.assign({}, defaultGoods);
+      this.repository = Object.assign({}, defaultRepository);
     },
     resetList() {
       for (let item in this.showColumn) {
@@ -439,11 +333,11 @@ export default {
     handleUpdate(index, row) {
       this.dialogVisible = true;
       this.isEdit = true;
-      this.goods = row;
+      this.repository = row;
     },
     handleDialogConfirm() {
       if (this.isEdit) {
-        updateGoods(this.goods).then(() => {
+        updateRepository(this.repository).then(() => {
           Message({
             message: "更新成功",
             type: "success",
@@ -453,7 +347,7 @@ export default {
           this.getList();
         });
       } else {
-        addGoods(this.goods).then(() => {
+        addRepository(this.repository).then(() => {
           Message({
             message: "添加成功",
             type: "success",
@@ -470,13 +364,13 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        let gids = [];
-        gids.push(row.id);
-        this.removeGoods(gids);
+        let ids = [];
+        ids.push(row.id);
+        this.removeRepository(ids);
       });
     },
-    removeGoods(gids) {
-      deleteGoods(gids).then(() => {
+    removeRepository(ids) {
+      deleteRepository(ids).then(() => {
         Message({
           message: "删除成功",
           type: "success",
@@ -507,41 +401,19 @@ export default {
         cancelButtonText: "取消",
         type: "warning",
       }).then(() => {
-        let gids = [];
+        let ids = [];
         for (let i = 0; i < this.multipleSelection.length; i++) {
-          gids.push(this.multipleSelection[i].id);
+          ids.push(this.multipleSelection[i].id);
         }
         switch (this.operateType) {
           case this.operates[0].value:
-            this.removeGoods(gids);
-            break;
-          case this.operates[1].value:
-            this.updateGoodsStatus(gids, 1);
-            break;
-          case this.operates[2].value:
-            this.updateGoodsStatus(gids, 0);
-            break;
-          default:
+            this.removeRepository(ids);
             break;
         }
         this.getList();
       });
     },
-    updateGoodsStatus(gids, status) {
-      updateStatus(gids, status).then(() => {
-        Message({
-          message: "更新成功",
-          type: "success",
-          duration: 3 * 1000,
-        });
-        this.getList();
-      });
-    },
-    handleShowStatusChange(index, row) {
-      let gids = [];
-      gids.push(row.id);
-      this.updateGoodsStatus(gids, row.available);
-    },
+
     handleSizeChange(val) {
       this.listQuery.page = 1;
       this.listQuery.limit = val;
@@ -554,19 +426,18 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-  },
-  mounted() {
-    this.$on("input", (val) => {
-      console.log(val);
-    });
+    getWareSite(){
+      getWareNameAndId().then(response=>{
+        this.ware = response.data
+      })
+    }
   },
   created() {
     this.getList();
-    this.getProduct();
+    this.getWareSite()
   },
 };
 </script>
 
 <style>
-
 </style>

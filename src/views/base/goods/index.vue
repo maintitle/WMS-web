@@ -399,7 +399,7 @@ export default {
         productcode: "",
         promitcode: "",
         page: 1,
-        limlt: 5,
+        limit: 5,
       },
       showColumn: {
         id: true,

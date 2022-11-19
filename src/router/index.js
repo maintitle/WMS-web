@@ -84,10 +84,10 @@ export const asyncRouterMap = [
             meta: { title: '采购需求', icon: 'ware_requirement' }
         },
         {
-            path: "puchase",
-            name: "ware_puchase",
-            component: () => import('@/views/ware/puchase/index'),
-            meta: { title: '采购单', icon: 'ware_puchase' }
+            path: "purchase",
+            name: "ware_purchase",
+            component: () => import('@/views/ware/purchase/index'),
+            meta: { title: '采购单', icon: 'ware_purchase' }
         }
         ]
     },
