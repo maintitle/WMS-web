@@ -64,6 +64,7 @@
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
+      <el-button class="btn-refresh"  circle icon="el-icon-refresh" @click="getList()"></el-button>
       <el-button class="btn-add" @click="handleAdd()" size="mini">
         添加采购需求
       </el-button>
@@ -114,11 +115,13 @@
         @selection-change="handleSelectionChange"
         v-loading="listLoading"
         border
+        :row-key="getRowKeys"
       >
         <el-table-column
           type="selection"
           width="60"
           align="center"
+          :reserve-selection="true"
         ></el-table-column>
         <el-table-column
           v-if="showColumn.id"
@@ -204,12 +207,14 @@
               <el-button
                 size="mini"
                 @click="handleUpdate(scope.$index, scope.row)"
+                :disabled="!(scope.row.status==0||scope.row.status==1)"
                 >编辑
               </el-button>
               <el-button
                 size="mini"
                 type="danger"
                 @click="handleDelete(scope.$index, scope.row)"
+                :disabled="scope.row.status==2"
                 >删除
               </el-button>
             </p>
@@ -448,6 +453,9 @@ export default {
         this.list = response.data.list;
         this.total = response.data.totalCount;
       });
+    },
+    getRowKeys(row) {
+      return row.id
     },
     handleSearchList() {
       this.getList();

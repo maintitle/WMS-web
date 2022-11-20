@@ -52,6 +52,12 @@
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
+      <el-button
+        class="btn-refresh"
+        circle
+        icon="el-icon-refresh"
+        @click="getList()"
+      ></el-button>
       <el-button class="btn-add" @click="handleAdd()" size="mini">
         添加采购单
       </el-button>
@@ -105,11 +111,13 @@
         @selection-change="handleSelectionChange"
         v-loading="listLoading"
         border
+        :row-key="getRowKeys"
       >
         <el-table-column
           type="selection"
           width="60"
           align="center"
+          :reserve-selection="true"
         ></el-table-column>
         <el-table-column
           v-if="showColumn.id"
@@ -185,12 +193,14 @@
               <el-button
                 size="mini"
                 @click="handleUpdate(scope.$index, scope.row)"
+                :disabled="!(scope.row.status == 0 || scope.row.status == 1)"
                 >编辑
               </el-button>
               <el-button
                 size="mini"
                 type="danger"
                 @click="handleDelete(scope.$index, scope.row)"
+                :disabled="scope.row.status == 2"
                 >删除
               </el-button>
             </p>
@@ -238,7 +248,11 @@
     >
       <el-form :model="purchase" label-width="150px" size="small">
         <el-form-item label="采购人：">
-          <el-select v-model="purchase.assigneeId" placeholder="请选择采购人" clearable>
+          <el-select
+            v-model="purchase.assigneeId"
+            placeholder="请选择采购人"
+            clearable
+          >
             <template>
               <el-option
                 v-for="item in userList"
@@ -248,14 +262,11 @@
               >
                 <span style="float: left">|采购人ID：{{ item.id }}|</span>
                 <span style="float: right; color: #8492a6; font-size: 13px"
-                  >{{ item.name }}:{{item.phone}}</span
+                  >{{ item.name }}:{{ item.phone }}</span
                 >
               </el-option>
             </template>
           </el-select>
-        </el-form-item>
-        <el-form-item label="采购金额：">
-          <el-input v-model="purchase.amount" style="width: 250px"></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -351,12 +362,15 @@ export default {
         this.total = response.data.totalCount;
       });
     },
+    getRowKeys(row) {
+      return row.id;
+    },
     handleSearchList() {
       this.getList();
     },
     handleResetSearch() {
-      this.listQuery.status=null;
-      this.listQuery.key=null;
+      this.listQuery.status = null;
+      this.listQuery.key = null;
       this.getList();
     },
     handleAdd() {

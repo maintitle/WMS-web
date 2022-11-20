@@ -55,6 +55,12 @@
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
+      <el-button
+        class="btn-refresh"
+        circle
+        icon="el-icon-refresh"
+        @click="getList()"
+      ></el-button>
       <el-button class="btn-add" @click="handleAdd()" size="mini">
         添加供应商
       </el-button>
@@ -110,11 +116,13 @@
         @selection-change="handleSelectionChange"
         v-loading="listLoading"
         border
+        :row-key="getRowKeys"
       >
         <el-table-column
           type="selection"
           width="60"
           align="center"
+          :reserve-selection="true"
         ></el-table-column>
         <el-table-column
           v-if="showColumn.id"
@@ -288,7 +296,8 @@
     <el-dialog
       :title="isEdit ? '编辑' : '添加'"
       :visible.sync="dialogVisible"
-      width="40%">
+      width="40%"
+    >
       <el-form :model="provide" label-width="150px" size="small">
         <el-form-item label="供应商名称：">
           <el-input
@@ -421,6 +430,9 @@ export default {
       for (let item in this.showColumn) {
         this.showColumn[item] = true;
       }
+    },
+    getRowKeys(row) {
+      return row.id;
     },
     getList() {
       fetchList(this.listQuery).then((response) => {

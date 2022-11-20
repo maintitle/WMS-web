@@ -53,9 +53,12 @@
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
-      <el-button class="btn-add" @click="handleAdd()" size="mini">
-        添加商品
-      </el-button>
+      <el-button
+        class="btn-refresh"
+        circle
+        icon="el-icon-refresh"
+        @click="getList()"
+      ></el-button>
       <!-- 配置列面板 -->
       <el-popover
         placement="bottom"
@@ -98,11 +101,13 @@
         @selection-change="handleSelectionChange"
         v-loading="listLoading"
         border
+        :row-key="getRowKeys"
       >
         <el-table-column
           type="selection"
           width="60"
           align="center"
+          :reserve-selection="true"
         ></el-table-column>
         <el-table-column
           v-if="showColumn.id"
@@ -154,9 +159,7 @@
           width="140"
           align="center"
         >
-          <template slot-scope="scope"
-            ><img style="height: 40px" :src="scope.row.stock"
-          /></template>
+          <template slot-scope="scope">{{ scope.row.stock }}</template>
         </el-table-column>
         <el-table-column
           v-if="showColumn.threshold"
@@ -229,7 +232,11 @@
     >
       <el-form :model="repository" label-width="150px" size="small">
         <el-form-item label="阈值：">
-          <el-input v-model="repository.threshold" style="width: 250px" placeholder="请输入阈值"></el-input>
+          <el-input
+            v-model="repository.threshold"
+            style="width: 250px"
+            placeholder="请输入阈值"
+          ></el-input>
         </el-form-item>
         <el-form-item label="仓库：">
           <el-select v-model="repository.wareId" placeholder="请选择仓库">
@@ -256,7 +263,11 @@
 
 <script>
 import { Message } from "element-ui";
-import { fetchList,updateRepository,addRepository,deleteRepository } from "@/api/ware_repository";
+import {
+  fetchList,
+  updateRepository,
+  deleteRepository,
+} from "@/api/ware_repository";
 import { getWareNameAndId } from "@/api/ware_site";
 const defaultRepository = {
   id: null,
@@ -301,7 +312,7 @@ export default {
       total: null,
       repository: Object.assign({}, defaultRepository),
       multipleSelection: [],
-      ware:[]
+      ware: [],
     };
   },
   methods: {
@@ -312,6 +323,9 @@ export default {
         this.total = response.data.totalCount;
       });
     },
+    getRowKeys(row) {
+      return row.id;
+    },
     handleResetSearch() {
       this.listQuery.wareId = "";
       this.listQuery.key = "";
@@ -319,11 +333,6 @@ export default {
     },
     handleSearchList() {
       this.getList();
-    },
-    handleAdd() {
-      this.dialogVisible = true;
-      this.isEdit = false;
-      this.repository = Object.assign({}, defaultRepository);
     },
     resetList() {
       for (let item in this.showColumn) {
@@ -340,16 +349,6 @@ export default {
         updateRepository(this.repository).then(() => {
           Message({
             message: "更新成功",
-            type: "success",
-            duration: 3 * 1000,
-          });
-          this.dialogVisible = false;
-          this.getList();
-        });
-      } else {
-        addRepository(this.repository).then(() => {
-          Message({
-            message: "添加成功",
             type: "success",
             duration: 3 * 1000,
           });
@@ -426,15 +425,15 @@ export default {
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
-    getWareSite(){
-      getWareNameAndId().then(response=>{
-        this.ware = response.data
-      })
-    }
+    getWareSite() {
+      getWareNameAndId().then((response) => {
+        this.ware = response.data;
+      });
+    },
   },
   created() {
     this.getList();
-    this.getWareSite()
+    this.getWareSite();
   },
 };
 </script>

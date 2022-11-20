@@ -70,6 +70,12 @@
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
+      <el-button
+        class="btn-refresh"
+        circle
+        icon="el-icon-refresh"
+        @click="getList()"
+      ></el-button>
       <el-button class="btn-add" @click="handleAdd()" size="mini">
         添加商品
       </el-button>
@@ -129,11 +135,13 @@
         @selection-change="handleSelectionChange"
         v-loading="listLoading"
         border
+        :row-key="getRowKeys"
       >
         <el-table-column
           type="selection"
           width="60"
           align="center"
+          :reserve-selection="true"
         ></el-table-column>
         <el-table-column
           v-if="showColumn.id"
@@ -447,6 +455,9 @@ export default {
         this.list = response.data.list;
         this.total = response.data.totalCount;
       });
+    },
+    getRowKeys(row) {
+      return row.id;
     },
     getProduct() {
       getProductNameAndId().then((response) => {

@@ -54,6 +54,12 @@
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
+      <el-button
+        class="btn-refresh"
+        circle
+        icon="el-icon-refresh"
+        @click="getList()"
+      ></el-button>
       <el-button class="btn-add" @click="handleAdd()" size="mini">
         添加客户
       </el-button>
@@ -107,11 +113,13 @@
         @selection-change="handleSelectionChange"
         v-loading="listLoading"
         border
+        :row-key="getRowKeys"
       >
         <el-table-column
           type="selection"
           width="60"
           align="center"
+          :reserve-selection="true"
         ></el-table-column>
         <el-table-column
           v-if="showColumn.id"
@@ -282,7 +290,8 @@
     <el-dialog
       :title="isEdit ? '编辑' : '添加'"
       :visible.sync="dialogVisible"
-      width="40%">
+      width="40%"
+    >
       <el-form :model="admin" label-width="150px" size="small">
         <el-form-item label="客户名称：">
           <el-input
@@ -417,6 +426,9 @@ export default {
         this.showColumn[item] = true;
       }
     },
+    getRowKeys(row) {
+      return row.id;
+    },
     getList() {
       this.listLoading = true;
       fetchList(this.listQuery).then((response) => {
@@ -540,7 +552,7 @@ export default {
       });
     },
     updateCustomerStatus(cids, status) {
-      updateStatus(cids,status).then(() => {
+      updateStatus(cids, status).then(() => {
         Message({
           message: "更新成功",
           type: "success",
@@ -551,11 +563,11 @@ export default {
     },
     handleShowStatusChange(index, row) {
       let cids = [];
-      cids.push(row.id)
-      this.updateCustomerStatus(cids,row.available)
+      cids.push(row.id);
+      this.updateCustomerStatus(cids, row.available);
     },
     handleSelectionChange(val) {
-      this.multipleSelection = val
+      this.multipleSelection = val;
     },
   },
   created() {

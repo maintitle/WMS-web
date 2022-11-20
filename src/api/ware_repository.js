@@ -21,10 +21,3 @@ export function updateRepository(data){
         data: data
     })
 }
-export function addRepository(data){
-    return request({
-        url: '/ware/repository/save',
-        method: 'post',
-        data: data
-    })
-}
