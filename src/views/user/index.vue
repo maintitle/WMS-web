@@ -21,7 +21,7 @@
 <script>
 import { InforTable, PhotoTable, PwdTable } from "./components";
 import { mapGetters } from "vuex";
-import { getUserInfo } from "@/api/user";
+import { getUserInfo } from "@/api/system_user";
 export default {
   data() {
     return {

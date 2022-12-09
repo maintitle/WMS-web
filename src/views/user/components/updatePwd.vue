@@ -34,7 +34,7 @@
 </template>
 
 <script>
-import { updateAdmin } from "@/api/login";
+import { updateUser } from "@/api/system_user";
 import { Message } from "element-ui";
 export default {
   name: "PwdTable",
@@ -81,7 +81,7 @@ export default {
           this.userData.id = this.userDetail.id;
           this.userData.pwd = this.ruleForm.pass;
           return new Promise(() => {
-            updateAdmin(this.userData).then(() => {
+            updateUser(this.userData).then(() => {
               Message({
                 message: '更新成功',
                 type: "success",

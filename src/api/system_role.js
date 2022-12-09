@@ -1,35 +1,29 @@
 import request from '@/utils/request'
-export function getList() {
-    return request({
-        url: '/system/dept/listAll',
-        method: 'get',
-    })
-}
 export function fetchList(params) {
     return request({
-        url: '/system/dept/list',
+        url: '/system/role/list',
         method: 'get',
         params: params
     })
 }
-export function deleteDept(ids){
+export function deleteRole(ids){
     return request({
-        url: '/system/dept/delete',
+        url: '/system/role/delete',
         method: 'post',
         data: ids
     })
 }
 
-export function updateDept(data){
+export function updateRole(data){
     return request({
-        url: '/system/dept/update',
+        url: '/system/role/update',
         method: 'post',
         data: data
     })
 }
-export function addDept(data){
+export function addRole(data){
     return request({
-        url: '/system/dept/save',
+        url: '/system/role/save',
         method: 'post',
         data: data
     })
@@ -37,7 +31,7 @@ export function addDept(data){
 
 export function updateStatus(ids,status){
     return request({
-        url: '/system/dept/update/status',
+        url: '/system/role/update/status',
         method: 'post',
         params: {
             status: status

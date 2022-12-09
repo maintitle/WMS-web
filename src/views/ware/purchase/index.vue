@@ -286,7 +286,7 @@ import {
   updatePurchase,
   addPurchase,
 } from "@/api/ware_purchase";
-import { fetchListAll as fetchListUser } from "@/api/user";
+import { fetchListAll as fetchListUser } from "@/api/system_user";
 const defaultPurchase = {};
 export default {
   data() {

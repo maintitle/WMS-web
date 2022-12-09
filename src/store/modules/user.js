@@ -1,4 +1,5 @@
-import { login, logout, getInfo } from '@/api/login'
+import { login, logout } from '@/api/login'
+import { getInfo } from '@/api/system_user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { reject, resolve } from 'core-js/fn/promise'
 

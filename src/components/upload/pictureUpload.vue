@@ -36,7 +36,7 @@
 <script>
 import axios from "axios";
 import { policy } from "@/api/obs";
-import { updateAdmin } from "@/api/login";
+import { updateUser } from "@/api/system_user";
 import { Message } from "element-ui";
 export default {
   name: "pictureUpload",
@@ -109,7 +109,7 @@ export default {
         return new Promise(() => {
           this.userData.id = this.id;
           this.userData.imgpath = this.obsUploadUrl + "/" + this.dataObj.key;
-          updateAdmin(this.userData).then(() => {
+          updateUser(this.userData).then(() => {
             this.imageUrl = this.userData.imgpath;
             Message({
               message: "上传成功",

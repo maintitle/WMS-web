@@ -380,7 +380,6 @@ export default {
       this.getList();
     },
     handleResetSearch() {
-      this.listQuery.status = null;
       this.listQuery.key = null;
       this.listQuery.id = null;
       this.getList();
@@ -508,6 +507,21 @@ export default {
         this.listLoading = false;
         this.list = response.data.list;
         this.total = response.data.totalCount;
+      });
+    },
+    handleShowStatusChange(index, row) {
+      let ids = [];
+      ids.push(row.id);
+      this.updateDeptStatus(ids, row.available);
+    },
+    updateDeptStatus(ids, status) {
+      updateStatus(ids, status).then(() => {
+        Message({
+          message: "更新成功",
+          type: "success",
+          duration: 3 * 1000,
+        });
+        this.getList();
       });
     },
   },
