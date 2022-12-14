@@ -6,8 +6,11 @@
       node-key="id"
       :render-content="renderContent"
       @node-click="handleNodeClick"
+      :default-expanded-keys="expandList"
       icon-class="none"
-      default-expand-all
+      ref="tree"
+      :show-checkbox="isCheckbox"
+      :default-expanded-key="idArr"
     ></el-tree>
   </div>
 </template>
@@ -20,6 +23,7 @@ export default {
       currentName: "",
       addName: "",
       open: false,
+      idArr: [],
     };
   },
   props: {
@@ -43,6 +47,17 @@ export default {
       type: Number,
       default: 0,
     },
+    isCheckbox: {
+      type: Boolean,
+      default: false,
+    },
+    getNode: {
+      type: Function,
+    },
+    expandList:{
+      type: Array,
+      default: ()=>[]
+    }
   },
   methods: {
     prevent() {
@@ -53,7 +68,7 @@ export default {
         this.currentId = "";
         return false;
       }
- 
+
       let edietData = {
         data,
         node,
@@ -67,6 +82,17 @@ export default {
     handleNodeClick(val) {
       this.$emit("getId", val.id);
     },
+    getCurrentSelectArray() {
+      this.$emit("getNode", this.$refs.tree.getCheckedNodes(true, false));
+    },
+    getNodeKey() {
+      return this.$refs.tree.getCheckedKeys();
+      //通过 key 获取
+    },
+    setKeys(val) {
+      this.$refs.tree.setCheckedKeys(val);
+      //通过 key 设置
+    },
     handleInput(val) {
       this.currentName = val;
     },
@@ -76,7 +102,7 @@ export default {
         this.currentName = data.name;
       } else if (value == "2") {
         let addData = { data, node };
- 
+
         this.$emit("addFn", addData);
       } else {
         this.$confirm("确定删除?", "提示", {
@@ -94,17 +120,20 @@ export default {
           .catch(() => {});
       }
     },
+    handleCheck(data){
+      console.log("data:",data,"refs:",this.$refs.tree.store)
+    },
     renderContent(h, { node, data, store }) {
       return (
         <div class="custom-tree-node" style={{ width: "100%" }}>
           {data.children ? (
             node.expanded ? (
-              <i class="el-icon-folder-opened" ></i>
+              <i class="el-icon-folder-opened"></i>
             ) : (
-              <i class="el-icon-folder" ></i>
+              <i class="el-icon-folder"></i>
             )
           ) : (
-            <i class="el-icon-document" ></i>
+            <i class="el-icon-document"></i>
           )}
           {this.currentId === data.id ? (
             <el-input

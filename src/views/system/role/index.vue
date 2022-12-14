@@ -149,11 +149,12 @@
             </el-switch>
           </template>
         </el-table-column>
-        <el-table-column label="操作" width="160" align="center" fixed="right">
+        <el-table-column label="操作" width="240" align="center" fixed="right">
           <template slot-scope="scope">
             <p>
               <el-button
                 size="mini"
+                type="success"
                 @click="handleUpdate(scope.$index, scope.row)"
                 >编辑
               </el-button>
@@ -162,6 +163,12 @@
                 type="danger"
                 @click="handleDelete(scope.$index, scope.row)"
                 >删除
+              </el-button>
+              <el-button
+                size="mini"
+                type="warning"
+                @click="handleAuthority(scope.$index, scope.row)"
+                >分配权限
               </el-button>
             </p>
           </template>
@@ -227,6 +234,24 @@
         >
       </span>
     </el-dialog>
+    <el-dialog
+      :title="'分配权限'"
+      :visible.sync="dialogAuthorityVisible"
+      width="40%"
+    >
+      <my-tree :data="menuList" :isCheckbox="true" :expandList="expandList" ref="treeNode"></my-tree>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogAuthorityVisible = false" size="small"
+          >取 消</el-button
+        >
+        <el-button
+          type="primary"
+          @click="handleDialogAuthorityConfirm()"
+          size="small"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -237,8 +262,13 @@ import {
   updateRole,
   addRole,
   updateStatus,
+  getRoleRelationPermission,
+  setRoleRelationPermission,
 } from "@/api/system_role";
+import { getMenusList,getAllList } from "@/api/system_permission";
 import { Message } from "element-ui";
+import myTree from "@/components/tree";
+import tree from "@/utils/tree";
 const defaultRole = {
   id: null,
   name: null,
@@ -247,6 +277,7 @@ const defaultRole = {
   available: null,
 };
 export default {
+  components: { myTree },
   data() {
     return {
       visible: false,
@@ -283,8 +314,12 @@ export default {
       list: [],
       role: Object.assign({}, defaultRole),
       dialogVisible: false,
+      dialogAuthorityVisible: false,
       isEdit: false,
       multipleSelection: [],
+      menuList: [],
+      rid: "",
+      expandList: []
     };
   },
   methods: {
@@ -305,6 +340,21 @@ export default {
         this.total = response.data.totalCount;
       });
     },
+    getMenus() {
+      getAllList().then((response) => {
+        this.menuList = tree.formatRouter.treeData(response.data);
+        // response.data.forEach(row=>{
+        //   if(row.type=="menu"){
+        //     this.expandList.push(row.id)
+        //   }
+        // })
+        this.expandList.push(1)//展开
+        console.log("exp:",this.expandList)
+      });
+    },
+    getTreeNode(val) {
+      // console.log(val);
+    },
     handleSizeChange(val) {
       this.listQuery.page = 1;
       this.listQuery.limit = val;
@@ -318,8 +368,7 @@ export default {
       this.getList();
     },
     handleResetSearch() {
-      this.listQuery.title = "";
-      this.listQuery.percode = "";
+      this.listQuery.key = "";
       this.getList();
     },
     handleDelete(index, row) {
@@ -337,6 +386,14 @@ export default {
       this.dialogVisible = true;
       this.isEdit = true;
       this.role = row;
+    },
+    handleAuthority(index, row) {
+      this.getMenus();
+      this.rid = row.id;
+      getRoleRelationPermission(this.rid).then((response) => {
+        this.$refs.treeNode.setKeys(response.data);
+      });
+      this.dialogAuthorityVisible = true;
     },
     handleDialogConfirm() {
       if (this.isEdit) {
@@ -429,6 +486,21 @@ export default {
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
+    },
+    handleDialogAuthorityConfirm() {
+      setRoleRelationPermission(
+        this.rid,
+        this.$refs.treeNode.getNodeKey()
+      ).then(() => {
+        this.handleAuthority();
+        Message({
+          message: "更新成功",
+          type: "success",
+          duration: 3 * 1000,
+        });
+        this.getList();
+        this.dialogAuthorityVisible = false;
+      });
     },
   },
   created() {

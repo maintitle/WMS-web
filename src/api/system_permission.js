@@ -39,3 +39,18 @@ export function updateStatus(ids,status){
         data: ids
     })
 }
+
+
+export function getMenusList(){
+    return request({
+        url: "/system/permission/MenusListAll",
+        method: 'get'
+    })
+}
+
+export function getAllList(){
+    return request({
+        url: "/system/permission/All",
+        method: 'get'
+    })
+}

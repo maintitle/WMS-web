@@ -27,11 +27,33 @@
           size="small"
           label-width="140px"
         >
-          <el-form-item label="角色名称：">
+          <el-form-item label="所属部门：">
+            <el-cascader
+              v-model="listQuery.deptid"
+              :options="deptList"
+              :props="{
+                expandTrigger: 'hover',
+                label: 'name',
+                value: 'id',
+                emitPath: false,
+              }"
+              :show-all-levels="false"
+              clearable
+            ></el-cascader>
+          </el-form-item>
+          <el-form-item label="用户名：">
             <el-input
               style="width: 203px"
               v-model="listQuery.key"
-              placeholder="请输入角色名称"
+              placeholder="请输入用户名"
+            ></el-input>
+          </el-form-item>
+
+          <el-form-item label="用户地址：">
+            <el-input
+              style="width: 203px"
+              v-model="listQuery.address"
+              placeholder="请输入用户地址"
             ></el-input>
           </el-form-item>
         </el-form>
@@ -47,7 +69,7 @@
         @click="getList()"
       ></el-button>
       <el-button class="btn-add" @click="handleAdd()" size="mini">
-        添加权限
+        添加用户
       </el-button>
       <!-- 配置列面板 -->
       <el-popover
@@ -62,11 +84,14 @@
             <div>选择显示字段</div>
             <div>
               <el-checkbox v-model="showColumn.id" disabled>编号</el-checkbox>
-              <el-checkbox v-model="showColumn.name">角色名称</el-checkbox>
-              <el-checkbox v-model="showColumn.remark">角色备注</el-checkbox>
-              <el-checkbox v-model="showColumn.createtime"
-                >创建时间</el-checkbox
-              >
+              <el-checkbox v-model="showColumn.name">用户昵称</el-checkbox>
+              <el-checkbox v-model="showColumn.loginname">登入名称</el-checkbox>
+              <el-checkbox v-model="showColumn.phone">电话</el-checkbox>
+              <el-checkbox v-model="showColumn.address">用户地址</el-checkbox>
+              <el-checkbox v-model="showColumn.sex">性别</el-checkbox>
+              <el-checkbox v-model="showColumn.remark">用户备注</el-checkbox>
+              <el-checkbox v-model="showColumn.deptid">所属部门</el-checkbox>
+              <el-checkbox v-model="showColumn.ordernum">排序码</el-checkbox>
               <el-checkbox v-model="showColumn.available">是否可用</el-checkbox>
             </div>
           </div>
@@ -110,7 +135,7 @@
         </el-table-column>
         <el-table-column
           v-if="showColumn.name"
-          label="角色名称"
+          label="用户昵称"
           width="120"
           align="center"
           :show-overflow-tooltip="true"
@@ -118,21 +143,70 @@
           <template slot-scope="scope">{{ scope.row.name }}</template>
         </el-table-column>
         <el-table-column
+          v-if="showColumn.loginname"
+          label="登入名称"
+          align="center"
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">{{ scope.row.loginname }}</template>
+        </el-table-column>
+        <el-table-column
+          v-if="showColumn.phone"
+          label="电话"
+          align="center"
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">{{ scope.row.phone }}</template>
+        </el-table-column>
+        <el-table-column
+          v-if="showColumn.address"
+          label="用户地址"
+          align="center"
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">{{ scope.row.address }}</template>
+        </el-table-column>
+
+        <el-table-column
+          v-if="showColumn.sex"
+          label="性别"
+          align="center"
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">{{
+            (scope.row.sex = 1 ? "男" : "女")
+          }}</template>
+        </el-table-column>
+
+        <el-table-column
           v-if="showColumn.remark"
-          label="角色备注"
+          label="用户备注"
           align="center"
           :show-overflow-tooltip="true"
         >
           <template slot-scope="scope">{{ scope.row.remark }}</template>
         </el-table-column>
+
         <el-table-column
-          v-if="showColumn.createtime"
-          label="创建时间"
+          v-if="showColumn.deptid"
+          label="所属部门"
           align="center"
           :show-overflow-tooltip="true"
         >
-          <template slot-scope="scope">{{ scope.row.createtime }}</template>
+          <template slot-scope="scope">{{
+            getDeptName(scope.row.deptid)
+          }}</template>
         </el-table-column>
+
+        <el-table-column
+          v-if="showColumn.ordernum"
+          label="排序码"
+          align="center"
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">{{ scope.row.ordernum }}</template>
+        </el-table-column>
+
         <el-table-column
           v-if="showColumn.available"
           label="是否可用"
@@ -206,15 +280,42 @@
       :visible.sync="dialogVisible"
       width="40%"
     >
-      <el-form :model="role" label-width="150px" size="small">
-        <el-form-item label="角色名称：">
-          <el-input v-model="role.name" style="width: 250px"></el-input>
+      <el-form :model="user" label-width="150px" size="small">
+        <el-form-item label="用户昵称：">
+          <el-input v-model="user.name" style="width: 250px"></el-input>
         </el-form-item>
-        <el-form-item label="角色备注：">
-          <el-input v-model="role.remark" style="width: 250px"></el-input>
+        <el-form-item label="登入名称：">
+          <el-input v-model="user.loginname" style="width: 250px"></el-input>
         </el-form-item>
-        <el-form-item label="是否启用：">
-          <el-radio-group v-model="role.available">
+        <el-form-item label="电话：">
+          <el-input v-model="user.phone" style="width: 250px"></el-input>
+        </el-form-item>
+        <el-form-item label="用户地址：">
+          <el-input v-model="user.address" style="width: 250px"></el-input>
+        </el-form-item>
+        <el-form-item label="性别：">
+          <el-input v-model="user.sex" style="width: 250px"></el-input>
+        </el-form-item>
+        <el-form-item label="用户备注：">
+          <el-input v-model="user.remark" style="width: 250px"></el-input>
+        </el-form-item>
+        <el-form-item label="所属部门：">
+          <el-input v-model="user.deptid" style="width: 250px"></el-input>
+        </el-form-item>
+        <el-form-item label="上级领导：">
+          <el-input v-model="user.mgr" style="width: 250px"></el-input>
+        </el-form-item>
+        <el-form-item label="排序码：">
+          <el-input v-model="user.ordernum" style="width: 250px"></el-input>
+        </el-form-item>
+        <el-form-item label="入职时间：">
+          <el-input v-model="user.hiredate" style="width: 250px"></el-input>
+        </el-form-item>
+        <el-form-item label="用户类型：">
+          <el-input v-model="user.type" style="width: 250px"></el-input>
+        </el-form-item>
+        <el-form-item label="是否可用：">
+          <el-radio-group v-model="user.available">
             <el-radio :label="1">是</el-radio>
             <el-radio :label="0">否</el-radio>
           </el-radio-group>
@@ -222,9 +323,7 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="handleDialogConfirm()" size="small"
-          >确 定</el-button
-        >
+        <el-button type="primary" @click="handleDialogConfirm()" size="small">确 定</el-button>
       </span>
     </el-dialog>
   </div>
@@ -232,26 +331,37 @@
 
 <script>
 import {
+  getUserInfo,
   fetchList,
-  deleteRole,
-  updateRole,
-  addRole,
+  deleteUser,
+  updateUser,
+  addUser,
   updateStatus,
-} from "@/api/system_role";
+} from "@/api/system_user";
+import tree from "@/utils/tree";
+import { getList as getDeptList } from "@/api/system_dept";
 import { Message } from "element-ui";
-const defaultRole = {
+const defaultUser = {
   id: null,
   name: null,
+  loginname: null,
+  phone: null,
+  address: null,
+  sex: null,
   remark: null,
-  createtime: null,
+  deptid: null,
+  ordernum: null,
   available: null,
 };
+
 export default {
   data() {
     return {
       visible: false,
       listQuery: {
         key: "",
+        deptid: "",
+        address: "",
         page: 1,
         limit: 5,
       },
@@ -259,8 +369,13 @@ export default {
         // 列状态：显示（true） / 隐藏（false）
         id: true,
         name: true,
+        loginname: true,
+        phone: true,
+        address: true,
+        sex: true,
         remark: true,
-        createtime: true,
+        deptid: true,
+        ordernum: true,
         available: true,
       },
       operates: [
@@ -281,10 +396,12 @@ export default {
       total: null,
       listLoading: true,
       list: [],
-      role: Object.assign({}, defaultRole),
+      user: Object.assign({}, defaultUser),
       dialogVisible: false,
       isEdit: false,
       multipleSelection: [],
+      deptList: [],
+      dept: [],
     };
   },
   methods: {
@@ -305,6 +422,12 @@ export default {
         this.total = response.data.totalCount;
       });
     },
+    getDept() {
+      getDeptList().then((response) => {
+        this.dept = response.data;
+        this.deptList = tree.formatRouter.treeData(response.data);
+      });
+    },
     handleSizeChange(val) {
       this.listQuery.page = 1;
       this.listQuery.limit = val;
@@ -318,8 +441,9 @@ export default {
       this.getList();
     },
     handleResetSearch() {
-      this.listQuery.title = "";
-      this.listQuery.percode = "";
+      this.listQuery.key = "";
+      this.listQuery.deptid = "";
+      this.listQuery.address = "";
       this.getList();
     },
     handleDelete(index, row) {
@@ -330,17 +454,20 @@ export default {
       }).then(() => {
         let ids = [];
         ids.push(row.id);
-        this.removeRole(ids);
+        this.removeUser(ids);
       });
     },
     handleUpdate(index, row) {
       this.dialogVisible = true;
       this.isEdit = true;
-      this.role = row;
+      this.isEdit & this.dialogVisible
+      getUserInfo(row.id).then((response)=>{
+          this.user=response.data
+        })
     },
     handleDialogConfirm() {
       if (this.isEdit) {
-        updateRole(this.role).then(() => {
+        updateUser(this.user).then(() => {
           Message({
             message: "更新成功",
             type: "success",
@@ -350,7 +477,7 @@ export default {
           this.getList();
         });
       } else {
-        addRole(this.role).then(() => {
+        addUser(this.user).then(() => {
           Message({
             message: "添加成功",
             type: "success",
@@ -364,7 +491,7 @@ export default {
     handleAdd() {
       this.dialogVisible = true;
       this.isEdit = false;
-      this.role = Object.assign({}, defaultRole);
+      this.user = Object.assign({}, defaultUser);
     },
     handleBatchOperate() {
       if (this.operateType == null) {
@@ -394,7 +521,7 @@ export default {
         }
         switch (this.operateType) {
           case this.operates[0].value:
-            this.removeRole(ids);
+            this.removeUser(ids);
             break;
           default:
             break;
@@ -402,8 +529,8 @@ export default {
         this.getList();
       });
     },
-    removeRole(ids) {
-      deleteRole(ids).then(() => {
+    removeUser(ids) {
+      deleteUser(ids).then(() => {
         Message({
           message: "删除成功",
           type: "success",
@@ -412,7 +539,7 @@ export default {
         this.getList();
       });
     },
-    updateRoleStatus(ids, status) {
+    updateUserStatus(ids, status) {
       updateStatus(ids, status).then(() => {
         Message({
           message: "更新成功",
@@ -425,14 +552,23 @@ export default {
     handleShowStatusChange(index, row) {
       let ids = [];
       ids.push(row.id);
-      this.updateRoleStatus(ids, row.available);
+      this.updateUserStatus(ids, row.available);
     },
     handleSelectionChange(val) {
       this.multipleSelection = val;
     },
+    //获取部门名称
+    getDeptName(key) {
+      for (var i = 0; this.dept.length; i++) {
+        if (this.dept[i].id == key) {
+          return this.dept[i].name;
+        }
+      }
+    },
   },
   created() {
     this.getList();
+    this.getDept();
   },
 };
 </script>

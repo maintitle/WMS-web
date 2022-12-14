@@ -4,6 +4,7 @@
       :data="deptList"
       @getId="getTreeId"
       class="tree-position"
+      :expandList="expandList"
     ></my-tree>
     <div class="app-container container-position">
       <el-card class="filter-container" shadow="never">
@@ -362,6 +363,7 @@ export default {
       multipleSelection: [],
       deptList: [],
       dept: Object.assign({}, defaultDept),
+      expandList: []
     };
   },
   methods: {
@@ -495,6 +497,7 @@ export default {
     getDept() {
       getDeptList().then((response) => {
         this.deptList = tree.formatRouter.treeData(response.data);
+        this.expandList.push(1)//展开
       });
     },
     handleNodeClick(data) {

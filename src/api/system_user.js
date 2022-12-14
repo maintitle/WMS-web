@@ -24,3 +24,34 @@ export function updateUser(data){
         data: data
     })
 }
+export function fetchList(params) {
+    return request({
+        url: '/system/user/list',
+        method: 'get',
+        params: params
+    })
+}
+export function updateStatus(ids,status){
+    return request({
+        url: '/system/user/update/status',
+        method: 'post',
+        params: {
+            status: status
+        },
+        data: ids
+    })
+}
+export function addUser(data){
+    return request({
+        url: '/system/user/save',
+        method: 'post',
+        data: data
+    })
+}
+export function deleteUser(ids){
+    return request({
+        url: '/system/user/delete',
+        method: 'post',
+        data: ids
+    })
+}
