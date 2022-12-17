@@ -87,11 +87,10 @@
               <el-checkbox v-model="showColumn.name">用户昵称</el-checkbox>
               <el-checkbox v-model="showColumn.loginname">登入名称</el-checkbox>
               <el-checkbox v-model="showColumn.phone">电话</el-checkbox>
-              <el-checkbox v-model="showColumn.address">用户地址</el-checkbox>
               <el-checkbox v-model="showColumn.sex">性别</el-checkbox>
-              <el-checkbox v-model="showColumn.remark">用户备注</el-checkbox>
               <el-checkbox v-model="showColumn.deptid">所属部门</el-checkbox>
               <el-checkbox v-model="showColumn.ordernum">排序码</el-checkbox>
+              <el-checkbox v-model="showColumn.role">角色</el-checkbox>
               <el-checkbox v-model="showColumn.available">是否可用</el-checkbox>
             </div>
           </div>
@@ -159,15 +158,6 @@
           <template slot-scope="scope">{{ scope.row.phone }}</template>
         </el-table-column>
         <el-table-column
-          v-if="showColumn.address"
-          label="用户地址"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-          <template slot-scope="scope">{{ scope.row.address }}</template>
-        </el-table-column>
-
-        <el-table-column
           v-if="showColumn.sex"
           label="性别"
           align="center"
@@ -176,15 +166,6 @@
           <template slot-scope="scope">{{
             (scope.row.sex = 1 ? "男" : "女")
           }}</template>
-        </el-table-column>
-
-        <el-table-column
-          v-if="showColumn.remark"
-          label="用户备注"
-          align="center"
-          :show-overflow-tooltip="true"
-        >
-          <template slot-scope="scope">{{ scope.row.remark }}</template>
         </el-table-column>
 
         <el-table-column
@@ -197,7 +178,14 @@
             getDeptName(scope.row.deptid)
           }}</template>
         </el-table-column>
-
+        <el-table-column
+          v-if="showColumn.role"
+          label="角色"
+          align="center"
+          :show-overflow-tooltip="true"
+        >
+          <template slot-scope="scope">{{ scope.row.role }}</template>
+        </el-table-column>
         <el-table-column
           v-if="showColumn.ordernum"
           label="排序码"
@@ -323,7 +311,9 @@
       </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false" size="small">取 消</el-button>
-        <el-button type="primary" @click="handleDialogConfirm()" size="small">确 定</el-button>
+        <el-button type="primary" @click="handleDialogConfirm()" size="small"
+          >确 定</el-button
+        >
       </span>
     </el-dialog>
   </div>
@@ -346,11 +336,10 @@ const defaultUser = {
   name: null,
   loginname: null,
   phone: null,
-  address: null,
   sex: null,
-  remark: null,
   deptid: null,
   ordernum: null,
+  role: null,
   available: null,
 };
 
@@ -371,12 +360,11 @@ export default {
         name: true,
         loginname: true,
         phone: true,
-        address: true,
         sex: true,
-        remark: true,
         deptid: true,
         ordernum: true,
         available: true,
+        role: true,
       },
       operates: [
         {
@@ -460,10 +448,10 @@ export default {
     handleUpdate(index, row) {
       this.dialogVisible = true;
       this.isEdit = true;
-      this.isEdit & this.dialogVisible
-      getUserInfo(row.id).then((response)=>{
-          this.user=response.data
-        })
+      this.isEdit & this.dialogVisible;
+      getUserInfo(row.id).then((response) => {
+        this.user = response.data;
+      });
     },
     handleDialogConfirm() {
       if (this.isEdit) {
