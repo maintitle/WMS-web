@@ -43,7 +43,7 @@
 </template>
 
 <script>
-import { getNotice } from "@/api/notice";
+import { getNotice } from "@/api/other_notice";
 export default {
   name: "Home",
   data() {

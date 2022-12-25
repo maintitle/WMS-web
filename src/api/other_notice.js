@@ -13,3 +13,9 @@ export function deleteNotice(ids){
         data: ids
     })
 }
+export function getNotice() {
+    return request({
+      url: '/other/notice/info',
+      method: 'get',
+    })
+  }
