@@ -61,6 +61,7 @@
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
+      <p>
       <el-button
         class="btn-refresh"
         circle
@@ -100,6 +101,7 @@
           >
         </template>
       </el-popover>
+      </p>
     </el-card>
     <div class="table-container">
       <el-table
