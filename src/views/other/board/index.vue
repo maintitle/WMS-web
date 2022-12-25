@@ -30,14 +30,14 @@
           <el-form-item label="公告标题：">
             <el-input
               style="width: 203px"
-              v-model="listQuery.name"
+              v-model="listQuery.title"
               placeholder="title"
             ></el-input>
           </el-form-item>
           <el-form-item label="操作人：">
             <el-input
               style="width: 203px"
-              v-model="listQuery.operate"
+              v-model="listQuery.opername"
               placeholder="请输入操作人"
             ></el-input>
           </el-form-item>
@@ -115,46 +115,52 @@
           <template slot-scope="scope">{{ scope.row.id }}</template>
         </el-table-column>
         <el-table-column
-          v-if="showColumn.loginid"
+          v-if="showColumn.title"
           label="公告标题"
           width="120"
           align="center"
           :show-overflow-tooltip="true"
         >
-          <template slot-scope="scope">{{ scope.row.loginid }}</template>
+          <template slot-scope="scope">{{ scope.row.title }}</template>
         </el-table-column>
         <el-table-column
-          v-if="showColumn.loginname"
+          v-if="showColumn.opername"
           label="操作人"
           align="center"
           :show-overflow-tooltip="true"
         >
-          <template slot-scope="scope">{{ scope.row.loginname }}</template>
+          <template slot-scope="scope">{{ scope.row.opername }}</template>
         </el-table-column>
         <el-table-column
-          v-if="showColumn.loginip"
+          v-if="showColumn.createtime"
           label="创建时间"
           align="center"
           :show-overflow-tooltip="true"
         >
-          <template slot-scope="scope">{{ scope.row.loginip }}</template>
+          <template slot-scope="scope">{{ scope.row.createtime }}</template>
         </el-table-column>
         <el-table-column
-          v-if="showColumn.logintime"
+          v-if="showColumn.updatetime"
           label="更新时间"
           align="center"
           :show-overflow-tooltip="true"
         >
-          <template slot-scope="scope">{{ scope.row.logintime }}</template>
+          <template slot-scope="scope">{{ scope.row.updatetime }}</template>
         </el-table-column>
-        <el-table-column label="操作" width="160" align="center" fixed="right">
+        <el-table-column label="操作" width="240" align="center" fixed="right">
           <template slot-scope="scope">
             <p>
               <el-button
                 size="mini"
-                type="danger"
-                @click="handleDelete(scope.$index, scope.row)"
-                >删除
+                type="success"
+                @click="handleView(scope.$index, scope.row)"
+                >查看
+              </el-button>
+              <el-button
+                size="mini"
+                type="warning"
+                @click="handleUpdate(scope.$index, scope.row)"
+                >编辑
               </el-button>
               <el-button
                 size="mini"
@@ -204,58 +210,24 @@
 </template>
 <script>
 import { Message } from "element-ui";
-import { fetchList, deleteLogged } from "@/api/other_logged";
+import { fetchList, deleteNotice } from "@/api/other_notice";
 export default {
   data() {
     return {
       visible: false,
       listQuery: {
-        ip: "",
-        name: "",
-        startDate: "",
-        endDate: "",
+        title: "",
+        opername: "",
         page: 1,
         limit: 5,
-      },
-      pickerOptions: {
-        shortcuts: [
-          {
-            text: "最近一周",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 7);
-              picker.$emit("pick", [start, end]);
-            },
-          },
-          {
-            text: "最近一个月",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 30);
-              picker.$emit("pick", [start, end]);
-            },
-          },
-          {
-            text: "最近三个月",
-            onClick(picker) {
-              const end = new Date();
-              const start = new Date();
-              start.setTime(start.getTime() - 3600 * 1000 * 24 * 90);
-              picker.$emit("pick", [start, end]);
-            },
-          },
-        ],
       },
       showColumn: {
         // 列状态：显示（true） / 隐藏（false）
         id: true,
-        loginid: true,
-        loginname: true,
-        phone: true,
-        loginip: true,
-        logintime: true,
+        title: true,
+        opername: true,
+        createtime: true,
+        updatetime: true,
       },
       operates: [
         {
@@ -314,7 +286,7 @@ export default {
       }).then(() => {
         let ids = [];
         ids.push(row.id);
-        this.removeLogged(ids);
+        this.removeNotice(ids);
       });
     },
     handleBatchOperate() {
@@ -345,7 +317,7 @@ export default {
         }
         switch (this.operateType) {
           case this.operates[0].value:
-            this.removeLogged(ids);
+            this.removeNotice(ids);
             break;
           default:
             break;
@@ -362,8 +334,8 @@ export default {
       this.listQuery.page = val;
       this.getList();
     },
-    removeLogged(ids) {
-      deleteLogged(ids).then(() => {
+    removeNotice(ids) {
+      deleteNotice(ids).then(() => {
         Message({
           message: "删除成功",
           type: "success",

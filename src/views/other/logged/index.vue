@@ -61,47 +61,47 @@
     <el-card class="operate-container" shadow="never">
       <i class="el-icon-tickets"></i>
       <span>数据列表</span>
-      <p>
-      <el-button
-        class="btn-refresh"
-        circle
-        icon="el-icon-refresh"
-        @click="getList()"
-      ></el-button>
-      <!-- 配置列面板 -->
-      <el-popover
-        placement="bottom"
-        :width="600"
-        :visible="visible"
-        style="float: right"
-      >
+        <el-button
+          class="btn-refresh"
+          circle
+          icon="el-icon-refresh"
+          @click="getList()"
+        ></el-button>
         <!-- 配置列面板 -->
-        <transition name="fade">
-          <div>
-            <div>选择显示字段</div>
+        <el-popover
+          placement="bottom"
+          :width="600"
+          :visible="visible"
+          style="float: right"
+        >
+          <!-- 配置列面板 -->
+          <transition name="fade">
             <div>
-              <el-checkbox v-model="showColumn.id" disabled>编号</el-checkbox>
-              <el-checkbox v-model="showColumn.loginid">登入ID</el-checkbox>
-              <el-checkbox v-model="showColumn.loginname"
-                >登陆用户名</el-checkbox
-              >
-              <el-checkbox v-model="showColumn.loginip">登陆IP</el-checkbox>
-              <el-checkbox v-model="showColumn.logintime">登陆时间</el-checkbox>
+              <div>选择显示字段</div>
+              <div>
+                <el-checkbox v-model="showColumn.id" disabled>编号</el-checkbox>
+                <el-checkbox v-model="showColumn.loginid">登入ID</el-checkbox>
+                <el-checkbox v-model="showColumn.loginname"
+                  >登陆用户名</el-checkbox
+                >
+                <el-checkbox v-model="showColumn.loginip">登陆IP</el-checkbox>
+                <el-checkbox v-model="showColumn.logintime"
+                  >登陆时间</el-checkbox
+                >
+              </div>
             </div>
+          </transition>
+          <div style="text-align: right; margin: 0">
+            <el-button size="small" icon="el-icon-refresh" @click="resetList()"
+              >重置展示列</el-button
+            >
           </div>
-        </transition>
-        <div style="text-align: right; margin: 0">
-          <el-button size="small" icon="el-icon-refresh" @click="resetList()"
-            >重置展示列</el-button
-          >
-        </div>
-        <template #reference>
-          <i style="font-size: 22px; cursor: pointer" @click="visible = true"
-            ><el-button size="mini">选择显示字段</el-button></i
-          >
-        </template>
-      </el-popover>
-      </p>
+          <template #reference>
+            <i style="font-size: 22px; cursor: pointer" @click="visible = true"
+              ><el-button size="mini">选择显示字段</el-button></i
+            >
+          </template>
+        </el-popover>
     </el-card>
     <div class="table-container">
       <el-table
@@ -161,7 +161,7 @@
         >
           <template slot-scope="scope">{{ scope.row.logintime }}</template>
         </el-table-column>
-        <el-table-column label="操作" width="160" align="center" fixed="right">
+        <el-table-column label="操作" width="80" align="center" fixed="right">
           <template slot-scope="scope">
             <p>
               <el-button
