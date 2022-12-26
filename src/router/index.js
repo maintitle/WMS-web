@@ -88,27 +88,19 @@ export const asyncRouterMap = [
             name: "ware_purchase",
             component: () => import('@/views/ware/purchase/index'),
             meta: { title: '采购单', icon: 'ware_purchase' }
-        }
-        ]
-    },
-    {
-        path: '/sale',
-        component: Layout,
-        redirect: '/sale/goods',
-        name: 'sale',
-        meta: { title: '销售管理', icon: 'sale' },
-        children: [{
-            path: "goods",
-            name: "sale_goods",
-            component: () => import('@/views/sale/goods/index'),
-            meta: { title: '商品销售', icon: 'sale_goods' }
         },
         {
-            path: "return",
-            name: "sale_return",
-            component: () => import('@/views/sale/return/index'),
-            meta: { title: '销售退货查询', icon: 'sale_return' }
-        }
+            path: "stockin",
+            name: "ware_stockin",
+            component: () => import('@/views/ware/stockin/index'),
+            meta: { title: '入库', icon: 'ware_stockin' }
+        },
+        {
+            path: "stockout",
+            name: "ware_stockout",
+            component: () => import('@/views/ware/stockout/index'),
+            meta: { title: '出库', icon: 'ware_stockout' }
+        },
         ]
     },
     {
