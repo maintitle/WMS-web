@@ -290,6 +290,9 @@
         <el-form-item label="所属部门：">
           <el-input v-model="user.deptid" style="width: 250px"></el-input>
         </el-form-item>
+        <el-form-item label="角色：">
+          <el-input v-model="user.role" style="width: 250px"></el-input>
+        </el-form-item>
         <el-form-item label="上级领导：">
           <el-input v-model="user.mgr" style="width: 250px"></el-input>
         </el-form-item>
@@ -506,7 +509,7 @@ export default {
         let ids = [];
         for (let i = 0; i < this.multipleSelection.length; i++) {
           ids.push(this.multipleSelection[i].id);
-        }
+        }id
         switch (this.operateType) {
           case this.operates[0].value:
             this.removeUser(ids);
@@ -550,6 +553,9 @@ export default {
       for (var i = 0; this.dept.length; i++) {
         if (this.dept[i].id == key) {
           return this.dept[i].name;
+        }
+        else{
+          return null;
         }
       }
     },
