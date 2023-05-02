@@ -24,6 +24,14 @@
           show-password
         ></el-input>
       </el-form-item>
+      <el-form-item label="旧密码" prop="oldPass">
+        <el-input
+          type="password"
+          v-model="ruleForm.oldPass"
+          autocomplete="off"
+          show-password
+        ></el-input>
+      </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="submitForm('ruleForm')"
           >提交</el-button
@@ -34,7 +42,7 @@
 </template>
 
 <script>
-import { updateUser } from "@/api/system_user";
+import { updateUserByPwd } from "@/api/system_user";
 import { Message } from "element-ui";
 export default {
   name: "PwdTable",
@@ -59,18 +67,28 @@ export default {
         callback();
       }
     };
+    var validatePass3 = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请输入密码"));
+      } else {
+        callback();
+      }
+    };
     return {
       ruleForm: {
         pass: "",
         checkPass: "",
+        oldPass: ""
       },
       rules: {
         pass: [{ validator: validatePass, trigger: "blur" }],
         checkPass: [{ validator: validatePass2, trigger: "blur" }],
+        oldPass: [{ validator: validatePass3, trigger: "blur" }]
       },
       userData: {
         id: "",
         pwd: "",
+        oldPwd: ""
       },
     };
   },
@@ -80,15 +98,16 @@ export default {
         if (valid) {
           this.userData.id = this.userDetail.id;
           this.userData.pwd = this.ruleForm.pass;
+          this.userData.oldPwd = this.ruleForm.oldPass;
           return new Promise(() => {
-            updateUser(this.userData).then(() => {
+            updateUserByPwd(this.userData).then(() => {
               Message({
-                message: '更新成功',
+                message: "更新成功",
                 type: "success",
                 duration: 3 * 1000,
               });
               //更新完退出登录
-              this.logout()
+              // this.logout();
             });
           });
         } else {
