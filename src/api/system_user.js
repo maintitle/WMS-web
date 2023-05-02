@@ -24,6 +24,13 @@ export function updateUser(data){
         data: data
     })
 }
+export function updateUserByPwd(data){
+    return request({
+        url: '/system/user/updatePwd',
+        method: 'post',
+        data: data
+    })
+}
 export function fetchList(params) {
     return request({
         url: '/system/user/list',

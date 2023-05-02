@@ -35,15 +35,16 @@ export const asyncRouterMap = [
     {
         path: '/base',
         component: Layout,
-        redirect: '/base/customer',
+        redirect: '/base/supply',
         name: 'base',
         meta: { title: '基础管理', icon: 'base' },
-        children: [{
-            path: "customer",
-            name: "base_customer",
-            component: () => import('@/views/base/customer/index'),
-            meta: { title: '客户管理', icon: 'base_customer' }
-        },
+        children: [
+        // {
+        //     path: "customer",
+        //     name: "base_customer",
+        //     component: () => import('@/views/base/customer/index'),
+        //     meta: { title: '客户管理', icon: 'base_customer' }
+        // },
         {
             path: "supply",
             name: "base_supply",
@@ -69,7 +70,7 @@ export const asyncRouterMap = [
             path: "site",
             name: "ware_site",
             component: () => import('@/views/ware/site/index'),
-            meta: { title: '商品进货', icon: 'ware_site' }
+            meta: { title: '站点', icon: 'ware_site' }
         },
         {
             path: "repository",
@@ -89,32 +90,33 @@ export const asyncRouterMap = [
             component: () => import('@/views/ware/purchase/index'),
             meta: { title: '采购单', icon: 'ware_purchase' }
         },
-        {
-            path: "stockin",
-            name: "ware_stockin",
-            component: () => import('@/views/ware/stockin/index'),
-            meta: { title: '入库', icon: 'ware_stockin' }
-        },
-        {
-            path: "stockout",
-            name: "ware_stockout",
-            component: () => import('@/views/ware/stockout/index'),
-            meta: { title: '出库', icon: 'ware_stockout' }
-        },
+        // {
+        //     path: "stockin",
+        //     name: "ware_stockin",
+        //     component: () => import('@/views/ware/stockin/index'),
+        //     meta: { title: '入库', icon: 'ware_stockin' }
+        // },
+        // {
+        //     path: "stockout",
+        //     name: "ware_stockout",
+        //     component: () => import('@/views/ware/stockout/index'),
+        //     meta: { title: '出库', icon: 'ware_stockout' }
+        // },
         ]
     },
     {
         path: '/system',
         component: Layout,
-        redirect: '/system/dept',
+        redirect: '/system/user',
         name: 'system',
         meta: { title: '系统管理', icon: 'system' },
-        children: [{
-            path: "dept",
-            name: "system_dept",
-            component: () => import('@/views/system/dept/index'),
-            meta: { title: '部门管理', icon: 'system_dept' }
-        },
+        children: [
+        // {
+        //     path: "dept",
+        //     name: "system_dept",
+        //     component: () => import('@/views/system/dept/index'),
+        //     meta: { title: '部门管理', icon: 'system_dept' }
+        // },
         {
             path: "permission",
             name: "system_permission",
@@ -135,26 +137,26 @@ export const asyncRouterMap = [
         }
         ]
     },
-    {
-        path: '/other',
-        component: Layout,
-        redirect: '/other/logged',
-        name: 'other',
-        meta: { title: '其它管理', icon: 'other' },
-        children: [{
-            path: "logged",
-            name: "other_logged",
-            component: () => import('@/views/other/logged/index'),
-            meta: { title: '登陆日志', icon: 'other_logged' }
-        },
-        {
-            path: "board",
-            name: "other_board",
-            component: () => import('@/views/other/board/index'),
-            meta: { title: '系统公告', icon: 'other_board' }
-        },
-        ]
-    },
+    // {
+    //     path: '/other',
+    //     component: Layout,
+    //     redirect: '/other/logged',
+    //     name: 'other',
+    //     meta: { title: '其它管理', icon: 'other' },
+    //     children: [{
+    //         path: "logged",
+    //         name: "other_logged",
+    //         component: () => import('@/views/other/logged/index'),
+    //         meta: { title: '登陆日志', icon: 'other_logged' }
+    //     },
+    //     {
+    //         path: "board",
+    //         name: "other_board",
+    //         component: () => import('@/views/other/board/index'),
+    //         meta: { title: '系统公告', icon: 'other_board' }
+    //     },
+    //     ]
+    // },
     { path: '*', redirect: '/404', hidden: true }
 ]
 
