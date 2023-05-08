@@ -27,7 +27,7 @@
           size="small"
           label-width="140px"
         >
-          <el-form-item label="所属部门：">
+          <!-- <el-form-item label="所属部门：">
             <el-cascader
               v-model="listQuery.deptid"
               :options="deptList"
@@ -40,7 +40,7 @@
               :show-all-levels="false"
               clearable
             ></el-cascader>
-          </el-form-item>
+          </el-form-item> -->
           <el-form-item label="用户名：">
             <el-input
               style="width: 203px"
@@ -164,7 +164,7 @@
           :show-overflow-tooltip="true"
         >
           <template slot-scope="scope">{{
-            (scope.row.sex = 1 ? "男" : "女")
+            scope.row.sex == 1 ? "男" : "女"
           }}</template>
         </el-table-column>
 
@@ -184,7 +184,9 @@
           align="center"
           :show-overflow-tooltip="true"
         >
-          <template slot-scope="scope">{{ scope.row.role }}</template>
+          <template slot-scope="scope">{{
+            getRoleName(scope.row.role)
+          }}</template>
         </el-table-column>
         <el-table-column
           v-if="showColumn.ordernum"
@@ -269,11 +271,9 @@
       width="40%"
     >
       <el-form :model="user" label-width="150px" size="small">
+        <el-form-item label="登入名称："><el-input :disabled="isEdit" v-model="user.loginname" style="width: 250px"></el-input></el-form-item>
         <el-form-item label="用户昵称：">
           <el-input v-model="user.name" style="width: 250px"></el-input>
-        </el-form-item>
-        <el-form-item label="登入名称：">
-          <el-input v-model="user.loginname" style="width: 250px"></el-input>
         </el-form-item>
         <el-form-item label="电话：">
           <el-input v-model="user.phone" style="width: 250px"></el-input>
@@ -282,34 +282,58 @@
           <el-input v-model="user.address" style="width: 250px"></el-input>
         </el-form-item>
         <el-form-item label="性别：">
-          <el-input v-model="user.sex" style="width: 250px"></el-input>
+          <el-radio-group v-model="user.sex">
+            <el-radio :label="1">男</el-radio>
+            <el-radio :label="0">女</el-radio>
+          </el-radio-group>
         </el-form-item>
-        <el-form-item label="用户备注：">
-          <el-input v-model="user.remark" style="width: 250px"></el-input>
-        </el-form-item>
-        <el-form-item label="所属部门：">
+
+        <!-- <el-form-item label="所属部门：">
           <el-input v-model="user.deptid" style="width: 250px"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="角色：">
-          <el-input v-model="user.role" style="width: 250px"></el-input>
+          <el-select
+            v-model="user.role"
+            multiple
+            collapse-tags
+            placeholder="请选择"
+          >
+            <el-option
+              v-for="item in role"
+              :key="item.value"
+              :label="item.name"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="上级领导：">
+        <!-- <el-form-item label="上级领导：">
           <el-input v-model="user.mgr" style="width: 250px"></el-input>
+        </el-form-item> -->
+
+        <el-form-item label="入职时间：">
+          <el-date-picker
+            v-model="user.hiredate"
+            type="date"
+            placeholder="选择日期"
+            value-format="yyyy-MM-dd HH:mm:ss"
+          >
+          </el-date-picker>
         </el-form-item>
+        <!-- <el-form-item label="用户类型：">
+          <el-input v-model="user.type" style="width: 250px"></el-input>
+        </el-form-item> -->
         <el-form-item label="排序码：">
           <el-input v-model="user.ordernum" style="width: 250px"></el-input>
         </el-form-item>
-        <el-form-item label="入职时间：">
-          <el-input v-model="user.hiredate" style="width: 250px"></el-input>
-        </el-form-item>
-        <el-form-item label="用户类型：">
-          <el-input v-model="user.type" style="width: 250px"></el-input>
-        </el-form-item>
-        <el-form-item label="是否可用：">
-          <el-radio-group v-model="user.available">
-            <el-radio :label="1">是</el-radio>
-            <el-radio :label="0">否</el-radio>
-          </el-radio-group>
+        <el-form-item label="用户备注：">
+          <el-input
+            type="textarea"
+            maxlength="50"
+            show-word-limit
+            v-model="user.remark"
+            style="width: 250px"
+          ></el-input>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
@@ -333,6 +357,7 @@ import {
 } from "@/api/system_user";
 import tree from "@/utils/tree";
 import { getList as getDeptList } from "@/api/system_dept";
+import { getIdAndNameList as getRoleNameList } from "@/api/system_role";
 import { Message } from "element-ui";
 const defaultUser = {
   id: null,
@@ -364,7 +389,7 @@ export default {
         loginname: true,
         phone: true,
         sex: true,
-        deptid: true,
+        deptid: false,
         ordernum: true,
         available: true,
         role: true,
@@ -393,6 +418,7 @@ export default {
       multipleSelection: [],
       deptList: [],
       dept: [],
+      role: [],
     };
   },
   methods: {
@@ -417,6 +443,11 @@ export default {
       getDeptList().then((response) => {
         this.dept = response.data;
         this.deptList = tree.formatRouter.treeData(response.data);
+      });
+    },
+    getRole() {
+      getRoleNameList().then((response) => {
+        this.role = response.data;
       });
     },
     handleSizeChange(val) {
@@ -509,7 +540,7 @@ export default {
         let ids = [];
         for (let i = 0; i < this.multipleSelection.length; i++) {
           ids.push(this.multipleSelection[i].id);
-        }id
+        }
         switch (this.operateType) {
           case this.operates[0].value:
             this.removeUser(ids);
@@ -553,16 +584,26 @@ export default {
       for (var i = 0; this.dept.length; i++) {
         if (this.dept[i].id == key) {
           return this.dept[i].name;
-        }
-        else{
+        } else {
           return null;
         }
       }
+    },
+    getRoleName(key) {
+      return key
+        ?.map((item) => {
+          var r = this.role.filter((i) => i.id == item);
+          if (r != undefined && r != null && r.length > 0) {
+            return r[0].name;
+          }
+        })
+        .join(",");
     },
   },
   created() {
     this.getList();
     this.getDept();
+    this.getRole();
   },
 };
 </script>

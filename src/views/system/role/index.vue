@@ -265,7 +265,7 @@ import {
   getRoleRelationPermission,
   setRoleRelationPermission,
 } from "@/api/system_role";
-import { getMenusList,getAllList } from "@/api/system_permission";
+import { getAllList } from "@/api/system_permission";
 import { Message } from "element-ui";
 import myTree from "@/components/tree";
 import tree from "@/utils/tree";
@@ -292,7 +292,7 @@ export default {
         name: true,
         remark: true,
         createtime: true,
-        available: true,
+        available: false,
       },
       operates: [
         {

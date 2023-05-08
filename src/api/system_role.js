@@ -59,3 +59,10 @@ export function setRoleRelationPermission(id, pids) {
         data: pids
     })
 }
+
+export function getIdAndNameList(){
+    return request({
+        url: '/system/role/getIdAndNameList',
+        method: 'get',
+    })
+}
