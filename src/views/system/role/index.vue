@@ -64,7 +64,7 @@
               <el-checkbox v-model="showColumn.id" disabled>编号</el-checkbox>
               <el-checkbox v-model="showColumn.name">角色名称</el-checkbox>
               <el-checkbox v-model="showColumn.remark">角色备注</el-checkbox>
-              <el-checkbox v-model="showColumn.createtime"
+              <el-checkbox v-model="showColumn.createTime"
                 >创建时间</el-checkbox
               >
               <el-checkbox v-model="showColumn.available">是否可用</el-checkbox>
@@ -126,12 +126,12 @@
           <template slot-scope="scope">{{ scope.row.remark }}</template>
         </el-table-column>
         <el-table-column
-          v-if="showColumn.createtime"
+          v-if="showColumn.createTime"
           label="创建时间"
           align="center"
           :show-overflow-tooltip="true"
         >
-          <template slot-scope="scope">{{ scope.row.createtime }}</template>
+          <template slot-scope="scope">{{ scope.row.createTime }}</template>
         </el-table-column>
         <el-table-column
           v-if="showColumn.available"
@@ -273,7 +273,7 @@ const defaultRole = {
   id: null,
   name: null,
   remark: null,
-  createtime: null,
+  createTime: null,
   available: null,
 };
 export default {
@@ -291,7 +291,7 @@ export default {
         id: true,
         name: true,
         remark: true,
-        createtime: true,
+        createTime: true,
         available: false,
       },
       operates: [
@@ -492,7 +492,7 @@ export default {
         this.rid,
         this.$refs.treeNode.getNodeKey()
       ).then(() => {
-        this.handleAuthority();
+        // this.handleAuthority();
         Message({
           message: "更新成功",
           type: "success",

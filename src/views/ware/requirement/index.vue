@@ -299,9 +299,9 @@
         <el-form-item label="采购数量：">
           <el-input v-model="requirement.num" style="width: 250px"></el-input>
         </el-form-item>
-        <el-form-item label="采购金额：">
+        <!-- <el-form-item label="采购金额：">
           <el-input v-model="requirement.price" style="width: 250px"></el-input>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="仓库：">
           <el-select v-model="requirement.wareId" placeholder="请选择仓库">
             <template>
@@ -386,7 +386,7 @@ export default {
         purchase: true,
         goods: true,
         num: true,
-        price: true,
+        price: false,
         ware: true,
         createTime: true,
         updateTime: true,

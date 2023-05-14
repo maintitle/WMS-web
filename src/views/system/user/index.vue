@@ -291,7 +291,7 @@
         <!-- <el-form-item label="所属部门：">
           <el-input v-model="user.deptid" style="width: 250px"></el-input>
         </el-form-item> -->
-        <el-form-item label="角色：">
+        <el-form-item label="角色：" v-if="isEdit" >
           <el-select
             v-model="user.role"
             multiple

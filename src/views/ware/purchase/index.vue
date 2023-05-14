@@ -304,7 +304,7 @@ export default {
         purchaseId: true,
         purchaseName: true,
         phone: true,
-        amount: true,
+        amount: false,
         createTime: true,
         updateTime: true,
         status: true,

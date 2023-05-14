@@ -90,18 +90,18 @@ export const asyncRouterMap = [
             component: () => import('@/views/ware/purchase/index'),
             meta: { title: '采购单', icon: 'ware_purchase' }
         },
-        // {
-        //     path: "stockin",
-        //     name: "ware_stockin",
-        //     component: () => import('@/views/ware/stockin/index'),
-        //     meta: { title: '入库', icon: 'ware_stockin' }
-        // },
-        // {
-        //     path: "stockout",
-        //     name: "ware_stockout",
-        //     component: () => import('@/views/ware/stockout/index'),
-        //     meta: { title: '出库', icon: 'ware_stockout' }
-        // },
+        {
+            path: "stockin",
+            name: "ware_stockin",
+            component: () => import('@/views/ware/stockin/index'),
+            meta: { title: '入库', icon: 'ware_stockin' }
+        },
+        {
+            path: "stockout",
+            name: "ware_stockout",
+            component: () => import('@/views/ware/stockout/index'),
+            meta: { title: '出库', icon: 'ware_stockout' }
+        },
         ]
     },
     {

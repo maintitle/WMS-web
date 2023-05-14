@@ -49,7 +49,7 @@
               placeholder="请输入商品名称"
             ></el-input>
           </el-form-item>
-          <el-form-item label="生产批号：">
+          <!-- <el-form-item label="生产批号：">
             <el-input
               style="width: 203px"
               v-model="listQuery.productcode"
@@ -62,7 +62,7 @@
               v-model="listQuery.promitcode"
               placeholder="请输入批准文号"
             ></el-input>
-          </el-form-item>
+          </el-form-item> -->
         </el-form>
       </div>
     </el-card>

@@ -106,8 +106,8 @@ export default {
                 type: "success",
                 duration: 3 * 1000,
               });
-              //更新完退出登录
-              // this.logout();
+              // 更新完退出登录
+              this.logout();
             });
           });
         } else {
